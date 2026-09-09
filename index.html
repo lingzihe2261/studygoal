@@ -1561,9 +1561,10 @@ function loadVideos(){
 function saveVideos(arr){try{localStorage.setItem(BADUAN_KEY,JSON.stringify(arr));}catch(e){}}
 function normalizeDouyinUrl(s){
   if(!s)return '';
-  s=s.replace(/\s/g,'');
+  s=s.trim().replace(/\s+/g,'');
+  if(!/^https?:\/\//i.test(s)&&/douyin\.com/i.test(s))s='https://'+s;
   const m=s.match(/(https?:\/\/[^\s]*douyin\.com[^\s]*)/i);
-  if(m)return m[1].split('?')[0];
+  if(m)return m[1].split(/[?#]/)[0];
   return s;
 }
 function openBaduanModal(v){
@@ -4070,7 +4071,11 @@ function renderMorning(){
         h+='<div class="bd-title">'+esc(v.title||'未命名')+'</div>';
         if(v.note)h+='<div class="bd-note">'+esc(v.note)+'</div>';
         h+='<div class="bd-actions">';
-        h+='<button class="btn-primary" data-action="baduan-play" data-id="'+v.id+'"'+(hasUrl?'':' disabled style="opacity:.5"')+'>'+(hasUrl?'▶ 播放':'未配置链接')+'</button>';
+        if(hasUrl){
+          h+='<a class="btn-primary" href="'+esc(v.url)+'" target="_blank" rel="noopener noreferrer">▶ 播放</a>';
+        } else {
+          h+='<button class="btn-primary" disabled style="opacity:.5">未配置链接</button>';
+        }
         h+='<button class="btn-ghost" data-action="baduan-edit" data-id="'+v.id+'">编辑</button>';
         h+='<button class="btn-red" data-action="baduan-del" data-id="'+v.id+'">删除</button>';
         h+='</div></div>';
