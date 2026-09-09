@@ -975,6 +975,7 @@ function normalize(d){
   if(!punch.notes||!Array.isArray(punch.notes))punch.notes=[];
   if(!('_seed' in punch))punch._seed=false;
   if(!('schedule' in punch))punch.schedule=null;
+  if(!('schedCustom' in punch))punch.schedCustom=false;
   const dolist=(d.dolist&&typeof d.dolist==='object')?d.dolist:{};
   if(!dolist.items||typeof dolist.items!=='object')dolist.items={};
   const morning=(d.morning&&typeof d.morning==='object')?d.morning:MORNING_DEFAULT;
@@ -1002,7 +1003,7 @@ function copySeed(){
 }
 function buildExampleData(){
   const weekly={};
-  return {goals:[],weekly:weekly,diet:{ate:{},cups:{},draw:null,supp:{log:{},seedVer:0,plan:SUPP_PLAN_DEFAULT},suppD:{log:{},seedVer:0,plan:''}},punch:{missions:{},todos:{},notes:[],_seed:false,schedule:null},dolist:{items:{}},morning:MORNING_DEFAULT,copy:copySeed(),speak:speakSeed(),meta:{version:1,isExample:true,autoBackup:true,lastBackup:''}};
+  return {goals:[],weekly:weekly,diet:{ate:{},cups:{},draw:null,supp:{log:{},seedVer:0,plan:SUPP_PLAN_DEFAULT},suppD:{log:{},seedVer:0,plan:''}},punch:{missions:{},todos:{},notes:[],_seed:false,schedule:null,schedCustom:false},dolist:{items:{}},morning:MORNING_DEFAULT,copy:copySeed(),speak:speakSeed(),meta:{version:1,isExample:true,autoBackup:true,lastBackup:''}};
 }
 
 /* ============ 计算层（纯函数） ============ */
@@ -1770,7 +1771,7 @@ function clearExample(){
   saveData();refreshAll();toast('已清空示例目标');
 }
 function clearAll(){
-  state=normalize({goals:[],weekly:{},diet:{ate:{},cups:{},draw:null,supp:{log:{},seedVer:0,plan:SUPP_PLAN_DEFAULT},suppD:{log:{},seedVer:0,plan:''}},punch:{missions:{},todos:{},notes:[],_seed:false,schedule:null},dolist:{items:{}},speak:[],meta:{version:1,isExample:false}});
+  state=normalize({goals:[],weekly:{},diet:{ate:{},cups:{},draw:null,supp:{log:{},seedVer:0,plan:SUPP_PLAN_DEFAULT},suppD:{log:{},seedVer:0,plan:''}},punch:{missions:{},todos:{},notes:[],_seed:false,schedule:null,schedCustom:false},dolist:{items:{}},speak:[],meta:{version:1,isExample:false}});
   saveData();refreshAll();toast('已清空全部数据');
 }
 function genWeek(){
@@ -2485,7 +2486,7 @@ const PUNCH_SCH_DEFAULT=[
  {seg:'睡前缓冲',time:'21:00–22:30',dur:'90 分钟',plan:'洗漱闲读、按揉百会、风池、三阴交穴位；减少电子屏幕、远离高强度动脑，22:30 准时入睡'}
 ];
 let schedResetArm=false;let schedResetTimer=null;let punchShowDone={daily:false,work:false};let punchBfIdx=1;
-function punchSchedEff(){return state.punch.schedule===null?PUNCH_SCH_DEFAULT:(Array.isArray(state.punch.schedule)?state.punch.schedule:[]);}
+function punchSchedEff(){return state.punch.schedCustom?((Array.isArray(state.punch.schedule)&&state.punch.schedule.length)?state.punch.schedule:PUNCH_SCH_DEFAULT):PUNCH_SCH_DEFAULT;}
 function punchToMin(s){const m=String(s).match(/(\d{1,2}):(\d{2})/);return m?(+m[1]*60+(+m[2])):null;}
 function punchNowLine(arr){
   if(!arr.length)return '尚未设置日程，点右上角图标打开编辑';
@@ -2528,6 +2529,9 @@ function punchSchedSave(){
     const seg=(ins[0]?ins[0].value:'').trim();const tm=(ins[1]?ins[1].value:'').trim();const pl=ta?ta.value.trim():'';const du=(ins[2]?ins[2].value:'').trim();
     if(seg||tm||pl||du)arr.push({seg:seg||'未命名时段',time:tm||'--',plan:pl,dur:du});
   });
+  let isDef=arr.length===PUNCH_SCH_DEFAULT.length;
+  if(isDef){for(let i=0;i<arr.length;i++){const a=arr[i],b=PUNCH_SCH_DEFAULT[i];if(a.seg!==b.seg||a.time!==b.time||a.dur!==b.dur||a.plan!==b.plan){isDef=false;break;}}}
+  state.punch.schedCustom=!isDef;
   state.punch.schedule=arr;saveData();closeModal();refreshAll();toast('日程已保存（'+arr.length+' 段）');
 }
 function punchSchedRenumber(){
