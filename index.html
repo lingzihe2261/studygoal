@@ -1587,7 +1587,7 @@ function normalizeDouyinUrl(s){
 function openBaduanModal(v){
   v=v||{};
   openModal(
-    '<h3>'+(v.id?'编辑八段锦视频':'添加八段锦视频')+'</h3>'+
+    '<h3>编辑八段锦视频</h3>'+
     '<div class="field"><label>标题</label><input id="bd_title" placeholder="如：八段锦第一式 双手托天理三焦" value="'+esc(v.title||'')+'"></div>'+
     '<div class="field"><label>抖音链接</label><input id="bd_url" placeholder="粘贴抖音分享链接，如 https://v.douyin.com/xxxx" value="'+esc(v.url||'')+'"><div class="hint">在抖音 App 点视频「分享 → 复制链接」即可获得。手机端点「播放」会自动唤起抖音 App。</div></div>'+
     '<div class="field"><label>备注（可选）</label><textarea id="bd_note" maxlength="200" placeholder="动作要点、练习频次等">'+esc(v.note||'')+'</textarea></div>'+
