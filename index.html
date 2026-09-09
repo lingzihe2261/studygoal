@@ -1553,10 +1553,26 @@ function renderMine(){
 
 /* ============ 八段锦点播（抖音托管，跳转播放，零存储/流量费） ============ */
 const BADUAN_KEY='wb_studygoal_videos';
+const BADUAN_SEED_TITLE='八段锦·示例（点「编辑」替换为你的抖音链接）';
+function baduanSeed(){
+  return [{id:uid(),title:'八段锦·完整跟练（呼呼）',url:'https://v.douyin.com/PKpSgFE9SfQ/',note:'已预置抖音链接，点「▶ 播放」即可跳转抖音观看。可点「编辑」替换成你自己的八段锦视频。',createdAt:fmt(T)}];
+}
 function loadVideos(){
-  try{const raw=localStorage.getItem(BADUAN_KEY);if(raw){const arr=JSON.parse(raw);if(Array.isArray(arr))return arr;}}catch(e){}
-  const seed=[{id:uid(),title:'八段锦·示例（点「编辑」替换为你的抖音链接）',url:'',note:'在抖音 App 打开视频 → 点「分享」→「复制链接」，再点本卡片「编辑」把链接粘贴进去即可。手机上点「播放」会自动唤起抖音。',createdAt:fmt(T)}];
-  saveVideos(seed);return seed;
+  try{
+    const raw=localStorage.getItem(BADUAN_KEY);
+    if(raw){
+      const arr=JSON.parse(raw);
+      if(Array.isArray(arr)){
+        // 迁移：若仅含旧占位示例（未配置真实链接），自动替换为预置抖音链接，避免停留在空示例
+        const onlyPlaceholder=arr.length>0&&arr.every(function(x){return x.title===BADUAN_SEED_TITLE;});
+        if(onlyPlaceholder){const seed=baduanSeed();saveVideos(seed);return seed;}
+        return arr;
+      }
+    }
+  }catch(e){}
+  const seed=baduanSeed();
+  saveVideos(seed);
+  return seed;
 }
 function saveVideos(arr){try{localStorage.setItem(BADUAN_KEY,JSON.stringify(arr));}catch(e){}}
 function normalizeDouyinUrl(s){
