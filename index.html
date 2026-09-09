@@ -811,6 +811,17 @@ a.diet-jump{text-decoration:none;color:inherit;box-sizing:border-box}
 .s-gov{border-left-color:#d4b88d;}.s-gov .pick-sec-h{color:#c5a370;}
 .s-impact{border-left-color:#3fb6a8;}.s-impact .pick-sec-h{color:#2a9b8e;}
 .s-view{border-left-color:#e6a23c;}.s-view .pick-sec-h{color:#cf8a1e;}
+/* ---- 八段锦点播 ---- */
+.bd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+.bd-card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 10px rgba(80,60,120,.08);display:flex;flex-direction:column;gap:8px}
+.bd-ic{width:42px;height:42px;color:#7c5cff;border-radius:12px;background:rgba(124,92,255,.1);display:flex;align-items:center;justify-content:center}
+.bd-ic svg{width:22px;height:22px}
+.bd-title{font-weight:600;font-size:15px;color:#2a2440;line-height:1.35}
+.bd-note{font-size:12.5px;color:#8a85a0;line-height:1.5}
+.bd-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.bd-actions .btn-primary,.bd-actions .btn-ghost,.bd-actions .btn-red{flex:1;min-width:60px;font-size:13px;padding:8px 6px}
+.emo svg{width:20px;height:20px}
+@media(max-width:520px){.bd-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -859,6 +870,9 @@ a.diet-jump{text-decoration:none;color:inherit;box-sizing:border-box}
     </button>
     <button data-action="tab" data-tab="bazi">
       <span class="emo">☯️</span><span class="lbl">八字命理</span>
+    </button>
+    <button data-action="tab" data-tab="baduan">
+      <span class="emo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v6m0 0l-4 4m4-4l4 4M6 10l6 2 6-2"/></svg></span><span class="lbl">八段锦</span>
     </button>
     <button data-action="tab" data-tab="mine">
       <span class="emo">⚙️</span><span class="lbl">我的设置</span>
@@ -1042,7 +1056,7 @@ function weekSummary(ws){
 }
 
 /* ============ 状态 ============ */
-let activeTab=(function(){try{const t=localStorage.getItem('wb_studygoal_tab');if(t&&['dol','punch','sched','diet','today','speak','read','aroma','tcm','mine','morning','copy'].indexOf(t)>=0)return t;}catch(e){}return 'punch';})();
+let activeTab=(function(){try{const t=localStorage.getItem('wb_studygoal_tab');if(t&&['dol','punch','sched','diet','today','speak','read','aroma','tcm','mine','morning','copy','baduan'].indexOf(t)>=0)return t;}catch(e){}return 'punch';})();
 let readBook=null;
 let readCat=null;
 let tcmView=null;
@@ -1081,6 +1095,7 @@ function refreshAll(){
   else if(activeTab==='bazi')renderBazi();
   else if(activeTab==='morning')renderMorning();
   else if(activeTab==='copy')renderCopy();
+  else if(activeTab==='baduan')renderBaduan();
   else renderMine();
 }
 function renderBanner(){
@@ -1538,6 +1553,74 @@ function renderMine(){
   ci.addEventListener('input',function(){const btn=document.getElementById('clearAllBtn');const ok=ci.value==='清空';btn.disabled=!ok;btn.style.opacity=ok?'1':'.5';});
   document.getElementById('fileInput').addEventListener('change',function(e){if(e.target.files[0])doImportFile(e.target.files[0]);});
 }
+
+/* ============ 八段锦点播（抖音托管，跳转播放，零存储/流量费） ============ */
+const BADUAN_KEY='wb_studygoal_videos';
+function loadVideos(){
+  try{const raw=localStorage.getItem(BADUAN_KEY);if(raw){const arr=JSON.parse(raw);if(Array.isArray(arr))return arr;}}catch(e){}
+  const seed=[{id:uid(),title:'八段锦·示例（点「编辑」替换为你的抖音链接）',url:'',note:'在抖音 App 打开视频 → 点「分享」→「复制链接」，再点本卡片「编辑」把链接粘贴进去即可。手机上点「播放」会自动唤起抖音。',createdAt:fmt(T)}];
+  saveVideos(seed);return seed;
+}
+function saveVideos(arr){try{localStorage.setItem(BADUAN_KEY,JSON.stringify(arr));}catch(e){}}
+function normalizeDouyinUrl(s){
+  if(!s)return '';
+  s=s.replace(/\s/g,'');
+  const m=s.match(/(https?:\/\/[^\s]*douyin\.com[^\s]*)/i);
+  if(m)return m[1].split('?')[0];
+  return s;
+}
+function renderBaduan(){
+  const list=loadVideos();
+  let html='';
+  html+='<div class="pu-hero"><div class="pu-slogan">抖音托管 · 跳转播放</div><h2>八段锦点播</h2><div class="pu-dt">'+fmt(T)+' · 跟着练，养好精气神</div></div>';
+  html+='<button class="btn-primary" data-action="baduan-add" style="margin-bottom:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>添加八段锦视频</button>';
+  if(list.length===0){html+='<div class="empty">还没有视频，点上面「添加八段锦视频」把抖音链接放进来。</div>';}
+  else{
+    html+='<div class="bd-grid">';
+    list.forEach(function(v){
+      const hasUrl=!!v.url;
+      html+='<div class="bd-card">';
+      html+='<div class="bd-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor" stroke="none"/></svg></div>';
+      html+='<div class="bd-title">'+esc(v.title||'未命名')+'</div>';
+      if(v.note)html+='<div class="bd-note">'+esc(v.note)+'</div>';
+      html+='<div class="bd-actions">';
+      html+='<button class="btn-primary" data-action="baduan-play" data-id="'+v.id+'"'+(hasUrl?'':' disabled style="opacity:.5"')+'>'+(hasUrl?'▶ 播放':'未配置链接')+'</button>';
+      html+='<button class="btn-ghost" data-action="baduan-edit" data-id="'+v.id+'">编辑</button>';
+      html+='<button class="btn-red" data-action="baduan-del" data-id="'+v.id+'">删除</button>';
+      html+='</div></div>';
+    });
+    html+='</div>';
+  }
+  document.getElementById('view').innerHTML=html;
+}
+function openBaduanModal(v){
+  v=v||{};
+  openModal(
+    '<h3>'+(v.id?'编辑八段锦视频':'添加八段锦视频')+'</h3>'+
+    '<div class="field"><label>标题</label><input id="bd_title" placeholder="如：八段锦第一式 双手托天理三焦" value="'+esc(v.title||'')+'"></div>'+
+    '<div class="field"><label>抖音链接</label><input id="bd_url" placeholder="粘贴抖音分享链接，如 https://v.douyin.com/xxxx" value="'+esc(v.url||'')+'"><div class="hint">在抖音 App 点视频「分享 → 复制链接」即可获得。手机端点「播放」会自动唤起抖音 App。</div></div>'+
+    '<div class="field"><label>备注（可选）</label><textarea id="bd_note" maxlength="200" placeholder="动作要点、练习频次等">'+esc(v.note||'')+'</textarea></div>'+
+    '<div class="modal-actions"><button class="cancel" data-action="modal-cancel">取消</button><button class="btn-green" data-action="baduan-save" data-id="'+esc(v.id||'')+'">保存</button></div>'
+  );
+}
+function baduanAdd(){openBaduanModal();}
+function baduanSave(id){
+  const title=document.getElementById('bd_title').value.trim();
+  const url=normalizeDouyinUrl(document.getElementById('bd_url').value.trim());
+  const note=document.getElementById('bd_note').value.trim();
+  if(!title){toast('请填写标题');return;}
+  let list=loadVideos();
+  if(id){list=list.map(function(x){return x.id===id?{id:id,title:title,url:url,note:note,createdAt:x.createdAt}:x;});}
+  else{list.unshift({id:uid(),title:title,url:url,note:note,createdAt:fmt(T)});}
+  saveVideos(list);closeModal();refreshAll();toast(id?'已更新':'已添加');
+}
+function baduanPlay(id){
+  const list=loadVideos();const v=list.filter(function(x){return x.id===id;})[0];
+  if(!v||!v.url){toast('还没配置抖音链接');return;}
+  window.open(v.url,'_blank');
+}
+function baduanEdit(id){const list=loadVideos();const v=list.filter(function(x){return x.id===id;})[0];if(v)openBaduanModal(v);}
+function baduanDel(id){askDelete('确定删除这条八段锦视频吗？',function(){let list=loadVideos();list=list.filter(function(x){return x.id!==id;});saveVideos(list);refreshAll();toast('已删除');});}
 
 /* ============ 弹窗 ============ */
 function openModal(html){document.getElementById('modal').innerHTML=html;document.getElementById('modalMask').classList.add('show');}
@@ -4230,6 +4313,11 @@ document.addEventListener('click',function(e){
   else if(a==='dol-del'){const tid=id;askDelete('确定删除这条待办吗？',function(){dolDel(tid);});}
   else if(a==='speak-add')speakAdd();
   else if(a==='speak-del'){const tid=id;askDelete('确定删除这条表达练习吗？',function(){speakDel(tid);});}
+  else if(a==='baduan-add')baduanAdd();
+  else if(a==='baduan-save')baduanSave(id);
+  else if(a==='baduan-play')baduanPlay(id);
+  else if(a==='baduan-edit')baduanEdit(id);
+  else if(a==='baduan-del')baduanDel(id);
 });
 document.addEventListener('keydown',function(e){
   if(e.key!=='Enter')return;
