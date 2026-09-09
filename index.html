@@ -2335,9 +2335,9 @@ function suppDPlanSave(){
 /* ============ 打卡 Tab：数据与渲染 ============ */
 function punchWeekday(d){return ['日','一','二','三','四','五','六'][d.getDay()];}
 const PUNCH_DEFAULT_TODOS=[
-  '晨间唤醒：脸部按摩、叩齿提肛',
-  '形体养护：金刚趴、金刚跪',
-  '运动健身：卷腹练功、站桩静蹲',
+  '晨间唤醒：金刚趴、金刚跪',
+  '晨起发愿：发愿朗读',
+  '运动健身：卷腹练功、力量训练',
   '早餐时段：维B、维D、叶黄素、PS',
   '每日艾灸：温补养生',
   '午餐时段：补锌',
@@ -2345,7 +2345,7 @@ const PUNCH_DEFAULT_TODOS=[
   '晚餐时段：铁、维C、叶酸',
   '内经抄写：静心修身',
   '晚间研学：朗读表达',
-  '睡前缓冲：轻松闲读、按揉穴位'
+  '睡前缓冲：洗漱闲读、按揉穴位'
 ];
 const PUNCH_WORK_DEFAULT=[
   '整理素材：书籍拆解1本',
@@ -2353,18 +2353,19 @@ const PUNCH_WORK_DEFAULT=[
   '整理素材：小红书视频5条',
   '图文创作：商业认知'
 ];
+const DAILY_SEED_VER=2;
 function punchSeed(){
   state.punch._seed=true;
-  const OLD=['走 7000 步','八段锦','睡前 10 分钟手帐','喝 1000ml 水'];
   const t=fmt(T);
   const arr=state.punch.todos[t];
-  const isOldDefault=function(a){
-    return !!a&&a.length===OLD.length&&a.every(function(x,k){return x.text===OLD[k]&&!x.done;});
-  };
-  const fresh=function(){return PUNCH_DEFAULT_TODOS.map(function(x){return {id:uid(),text:x,done:false};});};
+  const fresh=function(){return PUNCH_DEFAULT_TODOS.map(function(x){return {id:uid(),text:x,done:false,cat:'daily'};});};
   if(!arr){state.punch.todos[t]=fresh();}
-  else if(isOldDefault(arr)&&state.punch._seedVer!==2){state.punch.todos[t]=fresh();}
-  state.punch._seedVer=3;
+  else if(state.punch.dailySeedVer!==DAILY_SEED_VER){
+    // 用户此前日常打卡项为旧默认，统一迁移到新版 11 项（保留工作打卡项）
+    const work=(arr||[]).filter(function(x){return x.cat==='work';});
+    state.punch.todos[t]=work.concat(fresh());
+  }
+  state.punch.dailySeedVer=DAILY_SEED_VER;
   saveData();
 }
 function punchWorkSeed(){
@@ -2382,22 +2383,13 @@ function punchWorkSeed(){
 }
 function punchTodoCount(d){const a=state.punch.todos[d]||[];return {n:a.length,done:a.filter(function(x){return x.done;}).length};}
 function punchRate(d){const c=punchTodoCount(d);return c.n?Math.round(c.done/c.n*100):0;}
-function punchTodoAdd(cat){
-  const inp=document.querySelector('#view .puTodoIn[data-cat="'+(cat||'daily')+'"]');
-  const v=inp?inp.value.trim():'';
-  const t=fmt(T);if(!state.punch.todos[t])state.punch.todos[t]=[];
-  state.punch.todos[t].push({id:uid(),text:v||'新打卡事项',done:false,cat:cat||'daily'});
-  saveData();refreshAll();toast(v?'已加入今日打卡':'已加一条新事项，可点文字改名');
-}
+// punchTodoAdd 已移除：打卡项锁定为固定清单，不再支持新增
 function punchTodoToggle(id){
   const t=fmt(T);const a=state.punch.todos[t]||[];
   const x=a.find(function(it){return it.id===id;});if(!x)return;
   x.done=!x.done;saveData();refreshAll();
 }
-function punchTodoDel(id){
-  const t=fmt(T);state.punch.todos[t]=(state.punch.todos[t]||[]).filter(function(it){return it.id!==id;});
-  saveData();refreshAll();toast('已删除');
-}
+// punchTodoDel 已移除：打卡项锁定，不再支持删除
 function punchBfDay(){return fmt(addDays(T,-punchBfIdx));}
 function punchBfList(){
   const day=punchBfDay();
@@ -2457,16 +2449,7 @@ function punchTodoText(id,v){
   const x=a.find(function(it){return it.id===id;});if(!x)return;
   if(x.text===v)return;x.text=v;saveData();
 }
-function punchTodoIns(id){
-  const t=fmt(T);const a=state.punch.todos[t]||[];let idx=-1;
-  for(let k=0;k<a.length;k++){if(a[k].id===id){idx=k;break;}}
-  const pos=(idx<0)?a.length:(idx+1);
-  const c=(idx<0)?'daily':(a[idx].cat||'daily');
-  const it={id:uid(),text:'',done:false,cat:c};
-  a.splice(pos,0,it);
-  saveData();refreshAll();
-  const inp=document.querySelector('#view .todo-txt-in[data-id="'+it.id+'"]');if(inp)inp.focus();
-}
+// punchTodoIns 已移除：打卡项锁定，不再支持插入行
 const PUNCH_SCH_DEFAULT=[
  {seg:'晨间唤醒',time:'06:00–06:20',dur:'20 分钟',plan:'金刚趴、金刚跪，期间提肛、叩齿、梳头、颈部运动、按揉膻中、乳根、极泉、脸耳部'},
  {seg:'晨起发愿',time:'06:20–06:35',dur:'15 分钟',plan:'静心发愿，朗读'},
@@ -2604,9 +2587,7 @@ function renderPunch(){
   };
   const mkRow=function(td){
     return '<div class="todo-row'+(td.done?' done-row':'')+'"><button class="todo-ck'+(td.done?' done':'')+'" data-action="punch-todo-toggle" data-id="'+td.id+'">'+checkSvg+'</button>'+
-      '<input class="todo-txt-in'+(td.done?' done':'')+'" data-tt data-id="'+td.id+'" maxlength="60" value="'+esc(td.text)+'" placeholder="未命名事项">'+
-      '<button class="todo-ins" data-action="punch-todo-ins" data-id="'+td.id+'" title="在此下方插入一行"><svg viewBox="0 0 24 24"><path d="M12 7v10M7 12h10"/><path d="M4 21h16"/></svg></button>'+
-      '<button class="todo-del" data-action="punch-todo-del" data-id="'+td.id+'">'+delSvg+'</button></div>';
+      '<input class="todo-txt-in'+(td.done?' done':'')+'" data-tt data-id="'+td.id+'" maxlength="60" value="'+esc(td.text)+'" placeholder="未命名事项" readonly></div>';
   };
   const cardHtml=function(cat){
     const arr=(state.punch.todos[today]||[]).filter(function(x){return (x.cat||'daily')===cat;});
@@ -2624,7 +2605,7 @@ function renderPunch(){
       if(show){doneArr.forEach(function(td){h+=mkRow(td);});}
     }
     if(arr.length===0){
-      h+='<div class="todo-emptyadd"><button class="pu-btn" data-action="punch-todo-add" data-cat="'+cat+'">＋ 加一项'+nm.replace('打卡','')+'事项</button></div>';
+      h+='<div class="todo-emptyadd muted">暂无事项</div>';
     }
     h+='</div>';
     return h;
@@ -2671,9 +2652,7 @@ function renderPunch(){
 
   document.getElementById('view').innerHTML=html;
 
-  document.querySelectorAll('#view .puTodoIn').forEach(function(inp){
-    inp.addEventListener('keydown',function(e){if(e.key==='Enter')punchTodoAdd(inp.getAttribute('data-cat'));});
-  });
+  // 打卡项已锁定为固定清单，移除原 Enter 新增逻辑（.puTodoIn 本就无匹配元素）
 }
 
 /* ============ 待办 Tab：数据与渲染 ============ */
@@ -4308,10 +4287,7 @@ document.addEventListener('click',function(e){
   else if(a==='dd-plan-edit')suppDPlanEdit();
   else if(a==='dd-plan-save')suppDPlanSave();
   else if(a==='dd-plan-cancel')suppDPlanCancel();
-  else if(a==='punch-todo-add')punchTodoAdd(btn.getAttribute('data-cat')||'daily');
   else if(a==='punch-todo-toggle')punchTodoToggle(id);
-  else if(a==='punch-todo-ins')punchTodoIns(id);
-  else if(a==='punch-todo-del'){const tid=id;askDelete('确定删除这条打卡项吗？',function(){punchTodoDel(tid);});}
   else if(a==='punch-sched')openPunchSched();
   else if(a==='punch-sched-save')punchSchedSave();
   else if(a==='punch-sched-add')punchSchedAdd();
