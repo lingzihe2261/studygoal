@@ -2639,7 +2639,7 @@ function renderPunch(){
       '<div class="mission-flag">'+esc(schNow)+'</div></div>';
     html+=cardHtml('daily');
     html+=cardHtml('work');
-    html+=collapsibleCard('每日打卡完成率','rate', puStatOpen.rate, buildPunchStat());
+    html+=collapsibleCard('日常管理完成率','rate', puStatOpen.rate, buildPunchStat());
     html+=collapsibleCard('打卡项月度统计','month', puStatOpen.month, buildPunchMonthlyStat());
   }else{
     const nowD2=new Date();const nowMin2=nowD2.getHours()*60+nowD2.getMinutes();
