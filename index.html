@@ -204,6 +204,9 @@ h1.page-title{font-size:20px;margin:2px 0 4px;font-weight:800}
 .pm-stat-hd .ps-t svg{width:17px;height:17px;stroke:#d5b98f;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .pm-arw{font-size:13px;color:#d5b98f;font-weight:800;transition:transform .15s}
 .pm-stat-bd{margin-top:8px;border-top:1px dashed #f1e8da;padding-top:10px}
+.stat-jump{transition:transform .12s,box-shadow .12s}
+.stat-jump:active{transform:scale(.985)}
+.stat-jump .pm-arw{transform:none}
 .nutri-row{padding:2px 0}
 .nutri-f{font-size:13px;line-height:1.75;margin:8px 0;color:#444}
 .nutri-f b{color:#7a4f3c;margin-right:6px;font-weight:800;flex-shrink:0}
@@ -1070,6 +1073,7 @@ let baziDate='';
 let baziHour=12;
 let modalDateOffset=0;
 let punchSchedOpen=false;
+let punchStatView=null;
 let morningView=null;
 let videoUrl=null;
 let baduanView=false;
@@ -1080,7 +1084,7 @@ let pendingDelId=null;
 
 /* ============ 渲染层 ============ */
 function refreshAll(){
-  document.body.classList.toggle('book-open', (activeTab==='read' && !!readBook) || (activeTab==='bazi' && !!baziView) || (activeTab==='punch' && punchSchedOpen) || (activeTab==='diet' && dietView==='nutri' && nutriView!==null) || (activeTab==='morning' && !!morningView) || (activeTab==='morning' && !!videoUrl));
+  document.body.classList.toggle('book-open', (activeTab==='read' && !!readBook) || (activeTab==='bazi' && !!baziView) || (activeTab==='punch' && punchSchedOpen) || (activeTab==='punch' && punchStatView) || (activeTab==='diet' && dietView==='nutri' && nutriView!==null) || (activeTab==='morning' && !!morningView) || (activeTab==='morning' && !!videoUrl));
   renderBanner();
   document.querySelectorAll('#nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===activeTab);});
   if(activeTab==='dol')renderDol();
@@ -1185,6 +1189,11 @@ function collapsibleCard(title,key,open,innerHtml,cls,icon){
     '<div class="pm-stat-hd" data-action="pu-collapse" data-key="'+key+'"><span class="ps-t">'+ic+title+'</span><span class="pm-arw">'+(open?'▾':'▸')+'</span></div>'+
     (open?'<div class="pm-stat-bd">'+innerHtml+'</div>':'')+
   '</div>';
+}
+/* 跳转卡：点击后进入独立子页（隐藏导航栏），用于把折叠卡升级为整页 */
+function statJumpCard(title,action){
+  const ic='<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>';
+  return '<div class="board-card pm-statcard stat-jump" data-action="'+action+'"><div class="pm-stat-hd"><span class="ps-t">'+ic+title+'</span><span class="pm-arw">›</span></div></div>';
 }
 
 /* 目标进度：每个目标的完成率环 + 连续天数 + 预计完成 + 近14天投入图 + 最近记录（可删） */
@@ -2612,7 +2621,14 @@ function renderPunch(){
   };
 
   let html='';
-  if(!punchSchedOpen){
+  if(punchStatView==='rate'){
+    const chartSvg='<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>';
+    html+='<div class="pu-glass"><div class="pu-hd"><span class="pu-t">'+chartSvg+'日常管理完成率</span><span class="pu-act"><button class="pu-back" data-action="punch-stat-back">← 返回</button></span></div>'+buildPunchStat()+'</div>';
+  }else if(punchStatView==='month'){
+    const chartSvg='<svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>';
+    html+='<div class="pu-glass"><div class="pu-hd"><span class="pu-t">'+chartSvg+'打卡项月度统计</span><span class="pu-act"><button class="pu-back" data-action="punch-stat-back">← 返回</button></span></div>'+buildPunchMonthlyStat()+'</div>';
+  }
+  else if(!punchSchedOpen){
     html+='<div class="pu-glass"><div class="pu-hd"><span class="pu-t"><svg viewBox="0 0 24 24"><path d="M12 2l2.5 6.5H21l-5.5 4 2 7L12 15.5 6.5 19.5l2-7L3 8.5h6.5z"/></svg>今日完成率</span>'+
       '<span class="pu-act"><button class="pu-ico hot" data-action="punch-bf-open" title="补打卡：补记最近 6 天漏掉的打卡">'+bfSvg+'</button></span></div>'+
       '<div class="pu-rate-line"><span class="pu-rate-big">'+rate+'%</span><span class="pu-rate-side">已完成 '+tc.done+' / '+tc.n+' 项 · 达标线 80%</span></div>'+
@@ -2624,8 +2640,8 @@ function renderPunch(){
       '<div class="mission-flag">'+esc(schNow)+'</div></div>';
     html+=cardHtml('daily');
     html+=cardHtml('work');
-    html+=collapsibleCard('日常管理完成率','rate', puStatOpen.rate, buildPunchStat());
-    html+=collapsibleCard('打卡项月度统计','month', puStatOpen.month, buildPunchMonthlyStat());
+    html+=statJumpCard('日常管理完成率','punch-stat-rate');
+    html+=statJumpCard('打卡项月度统计','punch-stat-month');
   }else{
     const nowD2=new Date();const nowMin2=nowD2.getHours()*60+nowD2.getMinutes();
     const isNow2=function(x){const p=(x.time||'').split(/[–—-]/);if(p.length>=2){const a=punchToMin(p[0]),b=punchToMin(p[1]);if(a!=null&&b!=null&&nowMin2>=a&&nowMin2<b)return true;}return false;};
@@ -4232,6 +4248,9 @@ document.addEventListener('click',function(e){
   else if(a==='pu-collapse'){const k=btn.getAttribute('data-key');puStatOpen[k]=!puStatOpen[k];refreshAll();}
   else if(a==='punch-sched-view'){punchSchedOpen=true;refreshAll();}
   else if(a==='punch-sched-back'){punchSchedOpen=false;refreshAll();}
+  else if(a==='punch-stat-rate'){punchStatView='rate';refreshAll();}
+  else if(a==='punch-stat-month'){punchStatView='month';refreshAll();}
+  else if(a==='punch-stat-back'){punchStatView=null;refreshAll();}
   else if(a==='read-nav'){const sec=btn.getAttribute('data-read-sec');const el=document.getElementById('sec-'+sec);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
   else if(a==='read-search-clear'){const inp=document.querySelector('#view [data-read-search]');if(inp){inp.value='';filterBooks('');}}
   else if(a==='aroma-search-clear'){const inp=document.querySelector('#view [data-aroma-search]');if(inp){inp.value='';filterAroma('');}}
