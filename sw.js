@@ -1,4 +1,4 @@
-const CACHE = 'studygoal-v97';
+const CACHE = 'studygoal-v98';
 
 self.addEventListener('install', function (e) {
   // 不预缓存目录/资源，避免 addAll 任一失败导致整个 SW 安装失败、连带安装能力报废
