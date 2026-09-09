@@ -507,7 +507,10 @@ h1.page-title{font-size:20px;margin:2px 0 4px;font-weight:800}
 .sch-grid{display:flex;flex-direction:column;gap:9px;max-height:52vh;overflow:auto;padding-right:2px}
 .sch-row{border:1px solid #f3eee8;border-radius:12px;padding:8px 9px;background:#f3eee8}
 .sch-top{display:flex;gap:8px;align-items:center}
-.sch-top input:nth-child(2){flex:0 0 122px;text-align:center}
+.sch-top input:nth-child(1){flex:1 1 auto;min-width:0}
+.sch-top input:nth-child(2){flex:0 0 110px;text-align:center}
+.sch-top input:nth-child(3){flex:0 0 88px;text-align:center}
+.sl-dur{margin-left:6px;color:#9c6b3f;font-weight:700;font-size:12px}
 .sch-grid input,.sch-grid textarea{width:100%;border:1px solid #f1e8da;border-radius:9px;padding:8px 10px;font-size:13.5px;color:#000;background:#fff}
 .sch-grid textarea{min-height:52px;resize:vertical;margin-top:6px}
 .sch-seg{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
@@ -834,7 +837,7 @@ a.diet-jump{text-decoration:none;color:inherit;box-sizing:border-box}
 
   <nav class="nav" id="nav">
     <button data-action="tab" data-tab="punch" class="active">
-      <span class="emo">✅</span><span class="lbl">每日打卡</span>
+      <span class="emo">✅</span><span class="lbl">日常管理</span>
     </button>
     <button data-action="tab" data-tab="morning">
       <span class="emo">🌅</span><span class="lbl">晨起锻炼</span>
@@ -2464,22 +2467,22 @@ function punchTodoIns(id){
   const inp=document.querySelector('#view .todo-txt-in[data-id="'+it.id+'"]');if(inp)inp.focus();
 }
 const PUNCH_SCH_DEFAULT=[
- {seg:'晨间唤醒',time:'06:00–06:10',plan:'起床，做眼部运动、脸部按摩；完成全套叩齿提肛：叩齿百次、舌舔上颚、含漱津液咽下、提肛收松 50 次'},
- {seg:'形体养护',time:'06:10–06:30',plan:'金刚趴 10 分钟、金刚跪 10 分钟；梳头 100 次、颈部运动；按揉膻中穴、乳根穴、极泉穴'},
- {seg:'运动健身',time:'06:30–07:05',plan:'卷腹 500 个→八段锦 13 分钟→易筋经 5 分钟→站桩 5 分钟→静蹲 3 组；组间间隙搜集自媒体文案；天气适宜可替换 3 公里慢跑'},
- {seg:'早餐时段',time:'07:05–07:20',plan:'15 分钟专注吃早餐，不看手机、不处理自媒体工作消息'},
- {seg:'每日艾灸',time:'07:20–07:40',plan:'每日 20 分钟艾灸：中脘、关元、神阙、足三里、太溪、肾俞穴位温补养生'},
- {seg:'过渡缓冲',time:'07:40–08:00',plan:'喝水、整理桌面、放松调息，20 分钟缓冲，切换自媒体工作状态'},
- {seg:'高峰创作',time:'08:00–11:00',plan:'自媒体核心深度工作：选题构思、文案撰写、素材制作、剪辑创作、核心产出'},
- {seg:'午餐素材',time:'11:00–11:50',plan:'11:00 准时午餐、专注进食；餐后 30 分钟专门刷手机、浏览筛选视频素材'},
- {seg:'午休冥想',time:'11:50–12:25',plan:'闭目午休 20 分钟；休息后静心冥想 15 分钟，清空思绪、平复状态'},
- {seg:'知识归档',time:'12:25–14:25',plan:'每日固定 2 小时，整理、归类、沉淀自媒体知识库素材与笔记'},
- {seg:'午后事务',time:'14:25–17:30',plan:'自媒体剩余工作、消息处理、素材复盘、资料整理、轻量日常事务'},
- {seg:'晚餐休整',time:'17:30–17:50',plan:'17:30 准时晚餐，脱离工作状态，专注用餐放松'},
- {seg:'工作收尾',time:'17:50–19:00',plan:'梳理当日工作进度、复盘总结、罗列明日选题计划、关闭工作软件、划分生活边界'},
- {seg:'内经抄写',time:'19:00–19:30',plan:'静心抄写《黄帝内经》30 分钟，修身静心'},
- {seg:'晚间研学',time:'19:30–21:00',plan:'读书积累 30 分钟、表达力自由分享训练 30 分钟，剩余时间自由拓展深耕学习'},
- {seg:'睡前缓冲',time:'21:00–22:30',plan:'21 点完成洗漱；轻松闲读、按揉百会、风池、三阴交穴位；远离高强度动脑、减少电子屏幕，放松安神'}
+ {seg:'晨间唤醒',time:'06:00–06:20',dur:'20 分钟',plan:'金刚趴、金刚跪，期间提肛、叩齿、梳头、颈部运动、按揉膻中、乳根、极泉、脸耳部'},
+ {seg:'晨起发愿',time:'06:20–06:35',dur:'15 分钟',plan:'静心发愿，朗读'},
+ {seg:'运动健身',time:'06:35–07:10',dur:'35 分钟',plan:'卷腹 500 个（100 个 ×5 组，间隔 1 分钟，间隙找自媒体文案）→八段锦 13 分钟→易筋经 5 分钟→站桩 5 分钟→静蹲 2 分钟；天气适宜整套可替换为 3 公里慢跑'},
+ {seg:'早餐时段',time:'07:10–07:25',dur:'15 分钟',plan:'专注吃早餐，不看手机、不处理工作消息，不喝果糖饮料，补充营养素'},
+ {seg:'每日艾灸',time:'07:25–07:45',dur:'20 分钟',plan:'艾灸中脘、关元、神阙、足三里、太溪、肾俞等'},
+ {seg:'过渡缓冲',time:'07:45–08:05',dur:'20 分钟',plan:'喝水、整理桌面、放松调息，缓冲切换进入工作状态。吃补中益气丸或参苓白术丸'},
+ {seg:'高峰创作',time:'08:05–11:00',dur:'175 分钟',plan:'自媒体核心深度工作：选题构思、文案撰写、素材制作、剪辑创作、核心产出'},
+ {seg:'午餐时段',time:'11:00–11:50',dur:'50 分钟',plan:'午餐、专注进食 20 分钟；餐后 30 分钟专门刷手机浏览、筛选视频素材，补充营养素'},
+ {seg:'午休冥想',time:'11:50–12:25',dur:'35 分钟',plan:'闭目养神 20 分钟；休息后静心冥想 15 分钟，清空思绪、平复状态'},
+ {seg:'知识归档',time:'12:25–14:25',dur:'120 分钟',plan:'每日固定 2 小时，系统化整理、归类、沉淀自媒体知识库素材与笔记'},
+ {seg:'午后事务',time:'14:25–17:30',dur:'185 分钟',plan:'自媒体剩余工作、消息处理、素材复盘、资料整理、轻量日常事务'},
+ {seg:'晚餐时段',time:'17:30–17:50',dur:'20 分钟',plan:'准时晚餐，专注用餐，脱离工作状态，不刷工作消息'},
+ {seg:'工作收尾',time:'17:50–19:00',dur:'70 分钟',plan:'梳理当日工作进度、复盘总结、规划明日计划'},
+ {seg:'内经抄写',time:'19:00–19:30',dur:'30 分钟',plan:'静心抄写《黄帝内经》30 分钟，修身养性'},
+ {seg:'晚间研学',time:'19:30–21:00',dur:'90 分钟',plan:'读书积累 30 分钟、表达训练 30 分钟，剩余时间自由拓展深耕学习'},
+ {seg:'睡前缓冲',time:'21:00–22:30',dur:'90 分钟',plan:'洗漱闲读、按揉百会、风池、三阴交穴位；减少电子屏幕、远离高强度动脑，22:30 准时入睡'}
 ];
 let schedResetArm=false;let schedResetTimer=null;let punchShowDone={daily:false,work:false};let punchBfIdx=1;
 function punchSchedEff(){return state.punch.schedule===null?PUNCH_SCH_DEFAULT:(Array.isArray(state.punch.schedule)?state.punch.schedule:[]);}
@@ -2500,11 +2503,11 @@ function punchNowLine(arr){
   return '今日日程已结束，好好休息，明早见。';
 }
 function schRowHtml(r,i){
-  const seg=r?esc(r.seg):'';const tm=r?esc(r.time):'';const pl=r?esc(r.plan):'';
+  const seg=r?esc(r.seg):'';const tm=r?esc(r.time):'';const pl=r?esc(r.plan):'';const du=r?esc(r.dur||''):'';
   return '<div class="sch-row"><div class="sch-seg"><span class="no">'+(i+1)+'.</span>'+
     '<button class="sch-ins" data-action="punch-sched-ins" title="在此下方插入一行">＋ 在此下方插入</button>'+
     '<button class="sch-del" data-action="punch-sched-del">删除本行</button></div>'+
-    '<div class="sch-top"><input placeholder="时段名称，如 晨间唤醒" value="'+seg+'"><input placeholder="如 06:00–06:10" value="'+tm+'"></div>'+
+    '<div class="sch-top"><input placeholder="时段名称，如 晨间唤醒" value="'+seg+'"><input placeholder="如 06:00–06:10" value="'+tm+'"><input placeholder="时长，如 20 分钟" value="'+du+'"></div>'+
     '<textarea placeholder="当日安排……">'+pl+'</textarea></div>';
 }
 function openPunchSched(){
@@ -2522,8 +2525,8 @@ function punchSchedSave(){
   const rows=document.querySelectorAll('#schRows .sch-row');const arr=[];
   rows.forEach(function(r){
     const ins=r.querySelectorAll('input');const ta=r.querySelector('textarea');
-    const seg=(ins[0]?ins[0].value:'').trim();const tm=(ins[1]?ins[1].value:'').trim();const pl=ta?ta.value.trim():'';
-    if(seg||tm||pl)arr.push({seg:seg||'未命名时段',time:tm||'--',plan:pl});
+    const seg=(ins[0]?ins[0].value:'').trim();const tm=(ins[1]?ins[1].value:'').trim();const pl=ta?ta.value.trim():'';const du=(ins[2]?ins[2].value:'').trim();
+    if(seg||tm||pl||du)arr.push({seg:seg||'未命名时段',time:tm||'--',plan:pl,dur:du});
   });
   state.punch.schedule=arr;saveData();closeModal();refreshAll();toast('日程已保存（'+arr.length+' 段）');
 }
@@ -2654,7 +2657,7 @@ function renderPunch(){
         const on=isNow2(x);
         html+='<div class="sched-line'+(on?' now':'')+'"><div class="sl-h"><span class="sl-no">'+(k+1)+'.</span>'+
           '<b>'+esc(x.seg)+'</b>'+(on?'<span class="sl-cur">当前</span>':'')+
-          '<span class="sl-tm">'+esc(x.time)+'</span></div>'+
+          '<span class="sl-tm">'+esc(x.time)+'</span>'+(x.dur?'<span class="sl-dur">'+esc(x.dur)+'</span>':'')+'</div>'+
           (x.plan?'<div class="sl-p">'+esc(x.plan)+'</div>':'')+'</div>';
       });
       html+='</div>';
