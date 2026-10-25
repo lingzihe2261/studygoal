@@ -9209,8 +9209,8 @@ function ztAdvSave(){
 }
 function renderMine(){
   let html='';
-  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v353</div></div>';
-  html+='<div class="mine-card"><h3>数据备份</h3><p>所有数据存在本机浏览器，导出 JSON 可随身保存或换设备恢复。</p>'+
+  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v354</div></div>';
+  html+='<div class="mine-card"><h3>数据备份</h3><p>所有数据存在本机浏览器（含积分统计），导出 JSON 可随身保存或换设备恢复。</p>'+
     '<div class="mine-row"><button class="btn-primary" data-action="export" style="box-shadow:none">导出 JSON 备份</button>'+
     '<button class="btn-ghost" data-action="import">导入并覆盖</button></div></div>';
   html+='<div class="mine-card"><h3>云同步（GitHub Gist）</h3><p>用 GitHub 私密 Gist 在电脑与手机间同步全部数据。需一个仅含 <b>gist</b> 权限的 Token（只存本机，不上传）。</p>'+
@@ -9960,6 +9960,7 @@ function needBackupReauth(){try{return localStorage.getItem(BACKUP_DIR_NEEDREAUT
 function backupPayload(){
   var p=Object.assign({},state);
   try{var hz=localStorage.getItem('haodazi_tie_v1');if(hz)p._haodazi=JSON.parse(hz);}catch(e){}
+  try{var wp=localStorage.getItem('wbp2_accounts');if(wp)p._wbp2=JSON.parse(wp);}catch(e){}
   return p;
 }
 function exportJSON(){
@@ -9992,7 +9993,7 @@ function dailyBackupCheck(){
 function doImportFile(file){
   const fr=new FileReader();
   fr.onload=function(){
-    try{const d=JSON.parse(fr.result);state=normalize(d);if(Array.isArray(d._haodazi)){try{localStorage.setItem('haodazi_tie_v1',JSON.stringify(d._haodazi));}catch(e){}}saveData();refreshAll();toast('导入成功'+(Array.isArray(d._haodazi)?'（含好搭子）':''));}
+    try{const d=JSON.parse(fr.result);state=normalize(d);if(Array.isArray(d._haodazi)){try{localStorage.setItem('haodazi_tie_v1',JSON.stringify(d._haodazi));}catch(e){}}if(Array.isArray(d._wbp2)){try{localStorage.setItem('wbp2_accounts',JSON.stringify(d._wbp2));}catch(e){}}saveData();refreshAll();toast('导入成功'+(Array.isArray(d._haodazi)?'（含好搭子）':'')+(Array.isArray(d._wbp2)?'（含积分）':''));}
     catch(e){toast('导入失败：文件格式错误');}
   };
   fr.readAsText(file);
@@ -18090,7 +18091,7 @@ document.addEventListener('input',function(e){
   booting=false;
 })();
 
-var MINE='v353-20261025';
+var MINE='v354-20261025';
 /* 注册 Service Worker（v147→v262 强化）：清掉历史缓存 + 主动检查更新 + 网络优先拿最新页，根治"改了看不到" */
 function forceUpdate(){
   var done=function(){
@@ -18108,7 +18109,7 @@ function forceUpdate(){
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=353',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
+    navigator.serviceWorker.register('sw.js?v=354',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
     if(navigator.serviceWorker.getRegistration){ navigator.serviceWorker.getRegistration().then(function(reg){ if(reg){ reg.update().catch(function(){}); } }); }
     if(syncAutoOn()){ syncAutoReconcile().catch(function(){}); syncStartPolling(); }
   // 版本自愈：线上 build 与本地 MINE 不一致时，强制注销旧 SW 并拉最新页，根除缓存死锁导致的"改了看不到"
