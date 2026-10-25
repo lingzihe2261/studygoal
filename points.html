@@ -54,6 +54,9 @@ main{padding:20px 0 60px}
 .acc-near .n-val{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
 .n-red{color:var(--red)}.n-amber{color:#b87a0a}.n-purple{color:var(--purple-deep)}.n-ok{color:var(--muted)}
 .n-date{font-size:12px;font-weight:700}
+.n-chip{display:inline-block;font-size:13px;font-weight:800;border-radius:9px;padding:4px 11px;white-space:nowrap}
+.n-chip-red{background:var(--red);color:#fff}
+.n-chip-amber{background:var(--amber);color:#fff}
 .acc-note{font-size:11.5px;color:var(--muted);margin-top:8px;word-break:break-all}
 .empty{padding:36px;text-align:center;color:var(--muted);font-size:13.5px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -135,9 +138,11 @@ function nearClass(dl){ if (dl === null) return 'n-ok'; if (dl < 0) return 'n-re
 function nearText(a){
   if (a.nearAmt === null || a.nearAmt === undefined || a.nearAmt === '' || !a.nearDate) return '<span class="n-val n-ok">—</span>';
   var dl = daysLeft(a.nearDate);
-  var cls = nearClass(dl);
   var tail = dl === null ? '' : (dl < 0 ? ('已过期 ' + Math.abs(dl) + ' 天') : ('还剩 ' + dl + ' 天'));
-  return '<span class="n-val ' + cls + '">' + fmt(a.nearAmt) + '</span> <span class="n-date ' + cls + '">' + md(a.nearDate) + ' 到期' + (tail ? ' · ' + tail : '') + '</span>';
+  var txt = fmt(a.nearAmt) + ' · ' + md(a.nearDate) + ' 到期' + (tail ? ' · ' + tail : '');
+  if (dl !== null && (dl < 0 || dl <= 7)) return '<span class="n-chip n-chip-red">' + txt + '</span>';
+  if (dl !== null && dl <= 14) return '<span class="n-chip n-chip-amber">' + txt + '</span>';
+  return '<span class="n-val n-purple">' + txt + '</span>';
 }
 function sorted(){
   return accounts.slice().sort(function(a,b){

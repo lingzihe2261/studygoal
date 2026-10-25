@@ -9209,7 +9209,7 @@ function ztAdvSave(){
 }
 function renderMine(){
   let html='';
-  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v354</div></div>';
+  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v355</div></div>';
   html+='<div class="mine-card"><h3>数据备份</h3><p>所有数据存在本机浏览器（含积分统计），导出 JSON 可随身保存或换设备恢复。</p>'+
     '<div class="mine-row"><button class="btn-primary" data-action="export" style="box-shadow:none">导出 JSON 备份</button>'+
     '<button class="btn-ghost" data-action="import">导入并覆盖</button></div></div>';
@@ -11735,12 +11735,16 @@ function wptsCardHtml(){
     var hasTotal=(a.total!==null&&a.total!==undefined&&a.total!=='');
     var totalTxt=hasTotal ? wptsFmt(a.total)+'（'+wptsMd(a.totalDate)+' 统计）' : '待录入';
     var dl=a.nearDate?wptsDaysLeft(a.nearDate):null;
-    var cls=(dl===null)?'':((dl<0||dl<=7)?' style="color:var(--red)"':(dl<=14)?' style="color:#b87a0a"':'');
     var nearTxt=(a.nearAmt&&a.nearDate) ? wptsFmt(a.nearAmt)+'（'+wptsMd(a.nearDate)+' 到期）' : '—';
-    return '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 2px;border-bottom:1px dashed var(--line)">'
+    var nearHtml;
+    if(!(a.nearAmt&&a.nearDate)) nearHtml='<span style="font-size:12.5px;color:var(--muted);white-space:nowrap">—</span>';
+    else if(dl!==null&&(dl<0||dl<=7)) nearHtml='<span style="font-size:12px;font-weight:800;white-space:nowrap;background:var(--red);color:#fff;border-radius:8px;padding:3px 9px">'+nearTxt+'</span>';
+    else if(dl!==null&&dl<=14) nearHtml='<span style="font-size:12px;font-weight:800;white-space:nowrap;background:var(--amber);color:#fff;border-radius:8px;padding:3px 9px">'+nearTxt+'</span>';
+    else nearHtml='<span style="font-size:12.5px;font-weight:700;white-space:nowrap;color:var(--purple-deep)">'+nearTxt+'</span>';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 2px;border-bottom:1px dashed var(--line)">'
       +'<span style="font-weight:700;font-size:13.5px">'+esc(a.name)+'</span>'
       +'<span style="font-size:12.5px;color:var(--muted);white-space:nowrap">总 '+totalTxt+'</span>'
-      +'<span style="font-size:12.5px;font-weight:700;white-space:nowrap"'+cls+'>'+nearTxt+'</span></div>';
+      +nearHtml+'</div>';
   }).join('');
   var lastDate=''; (accs||[]).forEach(function(a){ if(a.totalDate&&a.totalDate>lastDate) lastDate=a.totalDate; });
   return '<div class="pu-glass" onclick="openPoints()" style="cursor:pointer">'
@@ -16710,7 +16714,7 @@ function renderSkin(){
     '<div style="padding:4px 2px 10px">'+
       '<h2 style="margin:6px 0 4px;font-size:19px;color:#4a3a7a">🧪 护肤科学</h2>'+
       '<p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#6b6286;background:#F0EBFB;border:1px solid #d7cfed;border-radius:12px;padding:10px 12px">这里后期会像「芳疗精油」一样，建成独立的护肤科学体系（成分机理 · 方案库 · 知识网络）。目前先接入 <b>肌语·皮肤私人医生</b>，帮你每天记录与养护肌肤。</p>'+
-      '<div class="blog-iframe-wrap"><iframe src="qiyu.html" title="肌语·皮肤私人医生" loading="lazy"></iframe></div>'+
+      '<div class="blog-iframe-wrap"><iframe src="qiyu.html?v='+(typeof MINE!=='undefined'?MINE:'1')+'" title="肌语·皮肤私人医生" loading="lazy"></iframe></div>'+
     '</div>';
   document.getElementById('view').innerHTML=html;
 }
@@ -18091,7 +18095,7 @@ document.addEventListener('input',function(e){
   booting=false;
 })();
 
-var MINE='v354-20261025';
+var MINE='v355-20261025';
 /* 注册 Service Worker（v147→v262 强化）：清掉历史缓存 + 主动检查更新 + 网络优先拿最新页，根治"改了看不到" */
 function forceUpdate(){
   var done=function(){
@@ -18109,7 +18113,7 @@ function forceUpdate(){
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=354',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
+    navigator.serviceWorker.register('sw.js?v=355',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
     if(navigator.serviceWorker.getRegistration){ navigator.serviceWorker.getRegistration().then(function(reg){ if(reg){ reg.update().catch(function(){}); } }); }
     if(syncAutoOn()){ syncAutoReconcile().catch(function(){}); syncStartPolling(); }
   // 版本自愈：线上 build 与本地 MINE 不一致时，强制注销旧 SW 并拉最新页，根除缓存死锁导致的"改了看不到"
