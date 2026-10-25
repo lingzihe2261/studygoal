@@ -2,7 +2,7 @@
    职责：① 清掉历史遗留缓存；② 导航请求"网络优先"——联网时永远先向服务器拿最新页，
    绝不留陈旧壳；仅在断网时回退到缓存（离线兜底）。
    注意：数据存在 localStorage，SW 只管页面外壳新旧，不碰业务数据。 */
-const CACHE = 'studygoal-shell-v352';
+const CACHE = 'studygoal-shell-v353';
 
 self.addEventListener('install', function (e) {
   e.waitUntil(self.skipWaiting());

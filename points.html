@@ -6,14 +6,13 @@
 <title>多账号积分统计系统</title>
 <style>
 :root{
-  --bg:#ffffff; --card:#fffdf8; --surface:#ffffff;
+  --bg:#ffffff; --surface:#ffffff;
   --line:#d4caee; --line-strong:#d7cfed;
-  --text:#241d3b; --ink2:#51476d; --muted:#6c618c;
+  --text:#241d3b; --muted:#6c618c;
   --purple:#7659cc; --purple2:#bbaee3; --purple-deep:#5b46a8; --purple-mid:#8f78d1;
   --purple-soft:#f3eefc;
   --red:#ef4444; --red-soft:#fdeaea;
   --amber:#f59e0b; --amber-soft:#fdf3e0;
-  --green:#22c55e; --green-soft:#e8f7ee;
   --tile:#f7f8fc;
   --shadow:0 4px 16px rgba(112,98,153,.08);
   --r:16px;
@@ -21,14 +20,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5}
-.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,select,textarea{font-family:inherit;font-size:15px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 11px;width:100%}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--purple2);outline-offset:-1px}
+input:focus,select:focus{outline:2px solid var(--purple2);outline-offset:-1px}
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-weight:600}
 .topbar{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--line)}
 .topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
-.topbar h1{font-size:17px;font-weight:800;color:var(--text);letter-spacing:.3px}
+.topbar h1{font-size:17px;font-weight:800;letter-spacing:.3px}
 .topbar h1 .t-dot{display:inline-block;width:11px;height:11px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));margin-right:8px;vertical-align:1px}
 .top-actions{display:flex;align-items:center;gap:10px}
 .sync-hint{font-size:12px;color:var(--muted)}
@@ -38,101 +37,41 @@ label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px;font-wei
 .btn.primary{background:linear-gradient(135deg,var(--purple),var(--purple2));border:none;color:#fff;box-shadow:var(--shadow)}
 .btn.danger{background:var(--red);border-color:var(--red);color:#fff}
 .btn.sm{padding:7px 12px;border-radius:9px;font-size:12.5px}
-.btn.ghost{background:transparent}
-.tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 16px;position:sticky;top:58px;background:var(--bg);z-index:40;border-bottom:1px solid var(--line)}
-.tab{white-space:nowrap;color:var(--muted);padding:8px 15px;border-radius:10px;font-size:14px;font-weight:600}
-.tab:hover{color:var(--text);background:var(--purple-soft)}
-.tab.active{background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;font-weight:700;box-shadow:var(--shadow)}
 main{padding:20px 0 60px}
-.panel{display:none}
-.panel.active{display:block}
-.card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:16px;margin-bottom:16px;box-shadow:var(--shadow)}
-.card h2{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.card h2::before{content:"";width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));flex-shrink:0}
-.card h3{font-size:13px;font-weight:700;margin-bottom:8px;color:var(--muted)}
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:13px 14px}
-.kpi .k-label{font-size:11.8px;color:var(--muted);font-weight:700}
-.kpi .k-value{font-size:22px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums;color:var(--text)}
-.kpi.red .k-value{color:var(--red)}
-.kpi.amber .k-value{color:var(--amber)}
-.acc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-.acc-card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:14px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s}
-.acc-card:hover{transform:translateY(-2px)}
-.acc-card .acc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.acc-card .acc-name{font-weight:800;font-size:16px}
-.acc-card .acc-num{font-size:26px;font-weight:800;color:var(--purple-deep);font-variant-numeric:tabular-nums}
-.acc-card .acc-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.badge{display:inline-block;font-size:11px;padding:2px 9px;border-radius:8px;font-weight:600}
-.badge.gray{background:var(--tile);color:var(--muted)}
-.badge.green{background:var(--green-soft);color:#17843f}
-.badge.red{background:var(--red-soft);color:var(--red)}
-.badge.amber{background:var(--amber-soft);color:#b87a0a}
-.badge.purple{background:var(--purple-soft);color:var(--purple-deep)}
-.mini-bars{display:flex;gap:5px;margin-top:10px}
-.mini-bars span{flex:1;text-align:center;font-size:11px;font-weight:700;border-radius:8px;padding:3px 0}
-.mb-red{background:var(--red-soft);color:var(--red)}
-.mb-amber{background:var(--amber-soft);color:#b87a0a}
-.mb-purple{background:var(--purple-soft);color:var(--purple-deep)}
-.table-scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:var(--purple-soft)}
-.num{font-variant-numeric:tabular-nums;font-weight:800}
-.dl-red{color:var(--red);font-weight:800}
-.dl-amber{color:#b87a0a;font-weight:800}
-.dl-purple{color:var(--purple-deep);font-weight:800}
-.dl-ok{color:var(--muted)}
-.row-actions{display:flex;gap:6px;white-space:nowrap}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.filters select,.filters input{width:auto;min-width:130px}
-.empty{padding:36px;text-align:center;color:var(--muted);font-size:13.5px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.notice{background:var(--purple-soft);color:var(--purple-deep);border-radius:12px;padding:11px 15px;font-size:13px;margin-bottom:16px;font-weight:600}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .toolbar h2{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px}
 .toolbar h2::before{content:"";width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2))}
-.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.cal-head .cal-title{font-weight:800;font-size:16px}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
-.cal-dow{font-size:11px;color:var(--muted);text-align:center;padding:4px 0;font-weight:700}
-.cal-day{min-height:66px;border:1px solid var(--line);border-radius:12px;padding:5px 7px;font-size:12px;background:var(--surface)}
-.cal-day.dim{opacity:.35}
-.cal-day.today{border:2px solid var(--purple)}
-.cal-day .d-num{font-size:12px;color:var(--muted);font-weight:700}
-.cal-day .d-exp{margin-top:4px;font-size:11px;font-weight:800;border-radius:7px;padding:2px 4px;text-align:center;color:#fff}
-.cal-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px;font-weight:600}
-.cal-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.acc-list{display:flex;flex-direction:column;gap:12px}
+.acc-card{background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:15px 16px;box-shadow:var(--shadow)}
+.acc-row1{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.acc-name{font-weight:800;font-size:16px}
+.acc-total{font-size:26px;font-weight:800;color:var(--purple-deep);font-variant-numeric:tabular-nums;line-height:1.2}
+.acc-total.na{color:var(--muted);font-size:18px;font-weight:600}
+.acc-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.acc-near{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.acc-near .n-label{font-size:12px;color:var(--muted);font-weight:600}
+.acc-near .n-val{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.n-red{color:var(--red)}.n-amber{color:#b87a0a}.n-purple{color:var(--purple-deep)}.n-ok{color:var(--muted)}
+.n-date{font-size:12px;font-weight:700}
+.acc-note{font-size:11.5px;color:var(--muted);margin-top:8px;word-break:break-all}
+.empty{padding:36px;text-align:center;color:var(--muted);font-size:13.5px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-grid .full{grid-column:1/-1}
 .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 .modal-mask{position:fixed;inset:0;background:rgba(36,29,59,.45);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
 .modal-mask.open{display:flex}
-.modal{background:var(--surface);border-radius:var(--r);padding:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 40px rgba(36,29,59,.18)}
-.modal h3{font-size:17px;font-weight:800;margin-bottom:14px;color:var(--text)}
-.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:11px 20px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:200;max-width:86vw;box-shadow:0 8px 24px rgba(36,29,59,.25)}
+.modal{background:var(--surface);border-radius:var(--r);padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 40px rgba(36,29,59,.18)}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:14px}
+.toast{position:fixed;left:50%;bottom:32px;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:11px 20px;border-radius:12px;font-size:13.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .25s;z-index:200;max-width:86vw}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.notice{background:var(--purple-soft);color:var(--purple-deep);border-radius:12px;padding:11px 15px;font-size:13px;margin-bottom:14px;font-weight:600}
-.split-list{margin-top:10px;font-size:12.5px}
-.split-list .split-row{display:flex;justify-content:space-between;padding:7px 10px;border-radius:9px;background:var(--tile);margin-bottom:5px}
-.shortfall{color:var(--red);font-weight:800;margin-top:8px;font-size:13.5px}
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13.5px}
-.bar-row .bar-name{width:90px;text-align:right;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.bar-row .bar-track{flex:1;height:18px;background:var(--tile);border-radius:6px;overflow:hidden}
-.bar-row .bar-fill{height:100%;background:linear-gradient(135deg,var(--purple),var(--purple2));border-radius:6px}
-.bar-row .bar-val{width:74px;font-variant-numeric:tabular-nums;font-weight:800}
-.stack-bar{display:flex;height:18px;border-radius:6px;overflow:hidden;margin-bottom:8px}
-.stack-bar div{height:100%}
-.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
 .danger-zone{border:1px solid var(--red);border-radius:12px;padding:14px;margin-top:16px}
 .danger-zone h3{color:var(--red)}
 .hint{font-size:12px;color:var(--muted);margin-top:6px}
-@media (max-width:720px){
-  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+@media (max-width:640px){
   .form-grid{grid-template-columns:1fr}
   .settings-grid{grid-template-columns:1fr}
-  .cal-day{min-height:54px}
-  .topbar h1{font-size:15.5px}
   .sync-hint{display:none}
 }
 </style>
@@ -141,7 +80,7 @@ tbody tr:hover td{background:var(--purple-soft)}
 
 <header class="topbar">
   <div class="wrap">
-    <h1><span class="t-dot"></span>多账号积分统计系统</h1>
+    <h1><span class="t-dot"></span>多账号积分统计</h1>
     <div class="top-actions">
       <span class="sync-hint">数据仅存本机</span>
       <button class="btn sm" id="quickBackup">导出备份</button>
@@ -149,212 +88,44 @@ tbody tr:hover td{background:var(--purple-soft)}
   </div>
 </header>
 
-<nav class="tabs" id="tabBar">
-  <button class="tab active" data-tab="dash">总览</button>
-  <button class="tab" data-tab="accounts">账号</button>
-  <button class="tab" data-tab="batches">积分批次</button>
-  <button class="tab" data-tab="record">记一笔</button>
-  <button class="tab" data-tab="calendar">到期日历</button>
-  <button class="tab" data-tab="tx">流水</button>
-  <button class="tab" data-tab="recon">对账</button>
-  <button class="tab" data-tab="stats">统计</button>
-  <button class="tab" data-tab="settings">设置</button>
-</nav>
-
 <main class="wrap">
-
-  <section class="panel active" id="panel-dash">
-    <div class="notice">5 个账号已按本机实测预置并补全。积分余额需你在各账号 App 内查看后，用「记一笔 · 获得积分」录入。数据只存在本机浏览器，请定期点右上角「导出备份」。</div>
-    <div class="kpi-grid" id="kpiGrid"></div>
-    <div class="card">
-      <h2>账号卡片墙</h2>
-      <div class="acc-grid" id="accGrid"></div>
-    </div>
-    <div class="card">
-      <h2>临期清单（30 天内到期，按到期日排序）</h2>
-      <div id="expireList"></div>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-accounts">
-    <div class="toolbar">
-      <h2>账号管理</h2>
-      <button class="btn primary" id="addAccountBtn">+ 新增账号</button>
-    </div>
-    <div class="card"><div class="table-scroll" id="accountsTable"></div></div>
-  </section>
-
-  <section class="panel" id="panel-batches">
-    <div class="toolbar">
-      <h2>积分批次</h2>
-      <button class="btn primary" id="addBatchBtn">+ 录入积分（获得）</button>
-    </div>
-    <div class="card">
-      <div class="filters">
-        <select id="fltAccount"><option value="">全部账号</option></select>
-        <select id="fltStatus">
-          <option value="">全部状态</option>
-          <option value="active">有效</option>
-          <option value="expired">已过期</option>
-          <option value="depleted">已用完</option>
-        </select>
-        <select id="fltRange">
-          <option value="">全部到期范围</option>
-          <option value="7">7 天内到期</option>
-          <option value="14">14 天内到期</option>
-          <option value="30">30 天内到期</option>
-          <option value="expired">已过期</option>
-          <option value="perm">永久</option>
-        </select>
+  <div class="notice">每周在各账号 App 内看一眼：剩余总积分 + 最近哪笔到期。点账号卡片即可更新，统计日期默认填今天。</div>
+  <div class="toolbar">
+    <h2>账号积分一览</h2>
+    <button class="btn primary" id="addBtn">+ 新增账号</button>
+  </div>
+  <div class="acc-list" id="accList"></div>
+  <div class="settings-grid">
+    <div class="card" style="background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)">
+      <h2 style="font-size:15px;font-weight:800;margin-bottom:10px">数据管理</h2>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn" id="exportJson">导出 JSON 备份</button>
+        <label class="btn" style="text-align:center">导入 JSON 备份<input type="file" id="importJson" accept=".json" style="display:none"/></label>
       </div>
-      <div class="table-scroll" id="batchesTable"></div>
+      <div class="hint" id="storageHint"></div>
     </div>
-  </section>
-
-  <section class="panel" id="panel-record">
-    <div class="card">
-      <h2>记一笔</h2>
-      <div style="display:flex;gap:8px;margin-bottom:14px">
-        <button class="btn primary sm" id="modeEarn">获得积分</button>
-        <button class="btn sm" id="modeConsume">消耗积分</button>
-      </div>
-      <div id="earnForm">
-        <div class="form-grid">
-          <div><label>账号</label><select id="earnAccount"></select></div>
-          <div><label>来源</label><select id="earnSource">
-            <option>订阅赠送</option><option>活动赠送</option><option>购买</option><option>任务奖励</option><option>其他</option>
-          </select></div>
-          <div><label>数量</label><input type="number" id="earnQty" min="1" step="1" placeholder="本次获得多少积分"/></div>
-          <div><label>获得日期</label><input type="date" id="earnDate"/></div>
-          <div><label>有效期</label><select id="earnValidity">
-            <option value="30">30 天</option><option value="90">90 天</option><option value="365">365 天</option><option value="0">永久</option><option value="custom">自定义天数</option>
-          </select></div>
-          <div id="earnCustomWrap" style="display:none"><label>自定义天数</label><input type="number" id="earnCustomDays" min="1" placeholder="天数"/></div>
-          <div class="full"><label>备注（可选）</label><input type="text" id="earnNote" placeholder="例如：10 月订阅赠送"/></div>
-        </div>
-        <div class="hint" id="earnExpireHint"></div>
-        <div class="form-actions"><button class="btn primary" id="earnSubmit">记下获得</button></div>
-      </div>
-      <div id="consumeForm" style="display:none">
-        <div class="form-grid">
-          <div><label>账号</label><select id="conAccount"></select></div>
-          <div><label>消耗数量</label><input type="number" id="conQty" min="1" step="1" placeholder="本次消耗多少积分"/></div>
-          <div><label>日期</label><input type="date" id="conDate"/></div>
-          <div class="full"><label>用途（可选）</label><input type="text" id="conPurpose" placeholder="例如：跑每日新闻研报任务"/></div>
-        </div>
-        <div class="split-list" id="conPreview"></div>
-        <div class="shortfall" id="conShortfall"></div>
-        <div class="form-actions"><button class="btn primary" id="conSubmit">确认消耗</button></div>
-      </div>
+    <div class="danger-zone">
+      <h3 style="font-size:14px;font-weight:800;margin-bottom:8px">危险区</h3>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:10px">清空所有账号记录，不可恢复。</p>
+      <button class="btn danger" id="clearAll">清空所有数据</button>
     </div>
-  </section>
-
-  <section class="panel" id="panel-calendar">
-    <div class="card">
-      <div class="cal-head">
-        <button class="btn sm" id="calPrev">‹ 上月</button>
-        <span class="cal-title" id="calTitle"></span>
-        <button class="btn sm" id="calNext">下月 ›</button>
-      </div>
-      <div class="cal-grid" id="calDowRow"></div>
-      <div class="cal-grid" id="calGrid"></div>
-      <div class="cal-legend">
-        <span><i style="background:var(--red)"></i>7 天内</span>
-        <span><i style="background:var(--amber)"></i>14 天内</span>
-        <span><i style="background:var(--purple-mid)"></i>30 天内</span>
-        <span><i style="background:var(--purple2)"></i>30 天以上</span>
-      </div>
-      <div class="hint">格子里的数字＝当天到期的积分总量（只统计有效批次）。已过期的批次不再计入，见「统计」里的浪费累计。</div>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-tx">
-    <div class="toolbar">
-      <h2>流水记录</h2>
-      <select id="txFilter" style="width:auto;min-width:130px"><option value="">全部账号</option></select>
-    </div>
-    <div class="card"><div class="table-scroll" id="txTable"></div></div>
-  </section>
-
-  <section class="panel" id="panel-recon">
-    <div class="card">
-      <h2>快照对账</h2>
-      <div class="notice" style="margin-bottom:12px">每周在各账号 App 内记一下当前积分余额，填进来和系统计算值对比。<b>实际 &gt; 计算</b>＝可能有没录入的收入；<b>实际 &lt; 计算</b>＝可能有漏记的消耗，或积分已过期。</div>
-      <div class="table-scroll" id="reconTable"></div>
-    </div>
-    <div class="card">
-      <h3>最近快照</h3>
-      <div class="table-scroll" id="snapTable"></div>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-stats">
-    <div class="card">
-      <h2>各账号可用积分</h2>
-      <div id="statBars"></div>
-    </div>
-    <div class="card">
-      <h2>临期分布（可用积分按到期远近）</h2>
-      <div id="statStack"></div>
-      <div class="cal-legend">
-        <span><i style="background:var(--red)"></i>7 天内</span>
-        <span><i style="background:var(--amber)"></i>14 天内</span>
-        <span><i style="background:var(--purple-mid)"></i>30 天内</span>
-        <span><i style="background:var(--purple2)"></i>30 天以上/永久</span>
-      </div>
-    </div>
-    <div class="card">
-      <h2>月度消耗</h2>
-      <div class="table-scroll" id="statMonth"></div>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-settings">
-    <div class="settings-grid">
-      <div class="card">
-        <h2>预警阈值（天）</h2>
-        <div class="form-grid">
-          <div><label>红色（最紧急）</label><input type="number" id="warnRed" min="1"/></div>
-          <div><label>橙色</label><input type="number" id="warnOrange" min="1"/></div>
-          <div><label>黄色</label><input type="number" id="warnYellow" min="1"/></div>
-        </div>
-        <div class="form-actions"><button class="btn primary" id="saveWarn">保存阈值</button></div>
-      </div>
-      <div class="card">
-        <h2>数据管理</h2>
-        <div style="display:flex;flex-direction:column;gap:8px">
-          <button class="btn" id="exportJson">导出 JSON 备份（整库）</button>
-          <button class="btn" id="exportBatchCsv">导出批次 CSV</button>
-          <button class="btn" id="exportTxCsv">导出流水 CSV</button>
-          <label class="btn" style="text-align:center">导入 JSON 备份<input type="file" id="importJson" accept=".json" style="display:none"/></label>
-        </div>
-        <div class="hint" id="storageHint"></div>
-        <div class="danger-zone">
-          <h3>危险区</h3>
-          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">清空所有账号、批次、流水和快照，不可恢复。</p>
-          <button class="btn danger" id="clearAll">清空所有数据</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  </div>
 </main>
 
 <div class="modal-mask" id="modalMask"><div class="modal" id="modalBox"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-var KEYS = { A:'wbpts_accounts', B:'wbpts_batches', T:'wbpts_tx', S:'wbpts_snapshots', C:'wbpts_settings', V:'wbpts_datav' };
-var DATA_VERSION = 2;
-var SEED_ACCOUNTS = [
-  { id:'acc_jaylen',  name:'Jaylen',   alias:'', purpose:'', contact:'', status:'正常', note:'user_id: eebc3528-a7fb-42ab-adc2-cc69416f1a9a · 10-20 排查时为登录账号 · 数据目录 10-19 活跃' },
-  { id:'acc_lzh',     name:'凌子禾',   alias:'', purpose:'主力', contact:'', status:'正常', note:'user_id: cb89b632-65df-463b-85d5-21b7a23c6f0f · 挂 3 个定时任务（每日精选/每日文案/每日一喻）· 主会话账号' },
-  { id:'acc_lzh2',    name:'凌子禾2',  alias:'永不眠：凌子禾2', purpose:'', contact:'', status:'正常', note:'user_id: 2238a68a-20f3-4925-8546-aad63ba8d2df · 数据目录 10-12 活跃' },
-  { id:'acc_zxsx',    name:'子禾师兄', alias:'', purpose:'', contact:'', status:'正常', note:'user_id: f69e83b3-f8d1-462b-ba22-461349b723eb · 重度活跃：9 个自定义专家（芳疗/护肤/睡眠/营养/中医/抖音运营/小红书运营/智囊团/身心同调）+ 连接器（乐享/腾讯文档/频道）+ 自动化 · 数据目录 10-13 活跃' },
-  { id:'acc_wen',     name:'文',       alias:'', purpose:'', contact:'', status:'正常', note:'user_id: 83ffe977-c094-4639-bb73-37ef56691235 · 数据目录 10-8 起活跃 · 注意：不是沙箱A' }
+var KEY = 'wbp2_accounts';
+var SEED = [
+  { id:'acc_jaylen', name:'Jaylen',   total:null, totalDate:'', nearAmt:null, nearDate:'', note:'user_id: eebc3528-a7fb-42ab-adc2-cc69416f1a9a · 待录入' },
+  { id:'acc_lzh',    name:'凌子禾',   total:1216.88, totalDate:'2026-10-25', nearAmt:97.08, nearDate:'2026-11-20', note:'user_id: cb89b632-65df-463b-85d5-21b7a23c6f0f · 官方 plans-usage 截图校准（最近到期笔：成长计划奖励 300 余 97.08，11-20 20:19:47）' },
+  { id:'acc_lzh2',   name:'凌子禾2',  total:null, totalDate:'', nearAmt:null, nearDate:'', note:'user_id: 2238a68a-20f3-4925-8546-aad63ba8d2df · 待录入' },
+  { id:'acc_zxsx',   name:'子禾师兄', total:null, totalDate:'', nearAmt:null, nearDate:'', note:'user_id: f69e83b3-f8d1-462b-ba22-461349b723eb · 待录入' },
+  { id:'acc_wen',    name:'文',       total:null, totalDate:'', nearAmt:null, nearDate:'', note:'user_id: 83ffe977-c094-4639-bb73-37ef56691235 · 待录入' }
 ];
 var storageOK = (function(){
-  try { localStorage.setItem('__wbpts_probe', '1'); localStorage.removeItem('__wbpts_probe'); return true; } catch(e){ return false; }
+  try { localStorage.setItem('__wbp2_probe', '1'); localStorage.removeItem('__wbp2_probe'); return true; } catch(e){ return false; }
 })();
 var memStore = {};
 var store = {
@@ -370,128 +141,30 @@ var store = {
     memStore[k] = s;
   }
 };
-var state = {
-  accounts: store.get(KEYS.A, null),
-  batches: store.get(KEYS.B, []),
-  tx: store.get(KEYS.T, []),
-  snaps: store.get(KEYS.S, []),
-  settings: store.get(KEYS.C, { warn:[7,14,30] })
-};
-if (!Array.isArray(state.settings.warn) || state.settings.warn.length !== 3) state.settings.warn = [7,14,30];
-
-function migrate(){
-  var v = store.get(KEYS.V, 0);
-  if (v >= DATA_VERSION) return;
-  if (!Array.isArray(state.accounts)) state.accounts = [];
-  SEED_ACCOUNTS.forEach(function(s){
-    var ex = null;
-    for (var i=0;i<state.accounts.length;i++) if (state.accounts[i].id === s.id) ex = state.accounts[i];
-    if (ex) { ex.name = s.name; ex.alias = s.alias; ex.purpose = s.purpose; ex.contact = s.contact; ex.status = s.status; ex.note = s.note; }
-    else state.accounts.push({ id:s.id, name:s.name, alias:s.alias, purpose:s.purpose, contact:s.contact, status:s.status, note:s.note });
-  });
-  store.set(KEYS.V, DATA_VERSION);
-  store.set(KEYS.A, state.accounts);
-}
-try { migrate(); } catch(e) {}
-
-if (typeof document !== 'undefined' && !storageOK) {
-  window.addEventListener('DOMContentLoaded', function(){
-    var b = document.createElement('div');
-    b.className = 'notice';
-    b.style.cssText = 'background:var(--red-soft);color:var(--red);margin:10px 16px 0';
-    b.textContent = '当前环境禁止本地存储（预览窗口常见限制），本轮数据刷新后会丢失。请把文件保存到电脑上，用浏览器直接打开使用。';
-    document.body.insertBefore(b, document.body.firstChild);
-  });
-}
-
-function saveAll(){
-  store.set(KEYS.A, state.accounts);
-  store.set(KEYS.B, state.batches);
-  store.set(KEYS.T, state.tx);
-  store.set(KEYS.S, state.snaps);
-  store.set(KEYS.C, state.settings);
-}
-function uid(p){ return (p||'id') + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+var accounts = store.get(KEY, null);
+if (!Array.isArray(accounts)) { accounts = SEED.slice(); store.set(KEY, accounts); }
+function save(){ store.set(KEY, accounts); }
+function uid(){ return 'acc_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function pad(n){ return String(n).padStart(2,'0'); }
 function today(){ var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
-function addDays(iso, days){ var d = new Date(iso + 'T00:00:00'); d.setDate(d.getDate() + days); return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+function md(iso){ return iso ? iso.slice(5).replace('-', '-') : '—'; }
 function daysLeft(iso){ if(!iso) return null; var t = new Date(today()+'T00:00:00'); var e = new Date(iso.slice(0,10)+'T00:00:00'); return Math.round((e - t) / 86400000); }
-function fmtNum(n){ return Number(n||0).toLocaleString('zh-CN'); }
-function accById(id){ for (var i=0;i<state.accounts.length;i++) if (state.accounts[i].id===id) return state.accounts[i]; return null; }
-function accName(id){ var a = accById(id); return a ? a.name : '（账号已删除）'; }
-
-function batchStatus(b){
-  if (b.remain <= 0) return 'depleted';
-  var dl = daysLeft(b.expiresAt);
-  if (dl !== null && dl < 0) return 'expired';
-  return 'active';
+function fmt(n){ return Number(n).toLocaleString('zh-CN', {maximumFractionDigits: 2}); }
+function nearClass(dl){ if (dl === null) return 'n-ok'; if (dl < 0) return 'n-red'; if (dl <= 7) return 'n-red'; if (dl <= 14) return 'n-amber'; if (dl <= 30) return 'n-purple'; return 'n-ok'; }
+function nearText(a){
+  if (a.nearAmt === null || a.nearAmt === undefined || a.nearAmt === '' || !a.nearDate) return '<span class="n-val n-ok">—</span>';
+  var dl = daysLeft(a.nearDate);
+  var cls = nearClass(dl);
+  var tail = dl === null ? '' : (dl < 0 ? ('已过期 ' + Math.abs(dl) + ' 天') : ('还剩 ' + dl + ' 天'));
+  return '<span class="n-val ' + cls + '">' + fmt(a.nearAmt) + '</span> <span class="n-date ' + cls + '">' + md(a.nearDate) + ' 到期' + (tail ? ' · ' + tail : '') + '</span>';
 }
-function dlClass(dl){
-  if (dl === null) return 'dl-ok';
-  if (dl < 0) return 'dl-red';
-  if (dl <= state.settings.warn[0]) return 'dl-red';
-  if (dl <= state.settings.warn[1]) return 'dl-amber';
-  if (dl <= state.settings.warn[2]) return 'dl-purple';
-  return 'dl-ok';
-}
-function dlText(b){
-  var st = batchStatus(b);
-  if (st === 'depleted') return '<span class="badge gray">已用完</span>';
-  if (st === 'expired') return '<span class="badge red">已过期 ' + Math.abs(daysLeft(b.expiresAt)) + ' 天</span>';
-  var dl = daysLeft(b.expiresAt);
-  if (dl === null) return '<span class="badge purple">永久</span>';
-  return '<span class="' + dlClass(dl) + '">还剩 ' + dl + ' 天</span>';
-}
-function accStats(accId){
-  var bs = state.batches.filter(function(b){ return b.accountId === accId; });
-  var r = { available:0, w7:0, w14:0, w30:0, wasted:0, activeCount:0 };
-  bs.forEach(function(b){
-    var st = batchStatus(b);
-    if (st === 'depleted') return;
-    if (st === 'expired') { r.wasted += b.remain; return; }
-    r.available += b.remain; r.activeCount++;
-    var dl = daysLeft(b.expiresAt);
-    if (dl !== null){
-      if (dl <= state.settings.warn[0]) r.w7 += b.remain;
-      else if (dl <= state.settings.warn[1]) r.w14 += b.remain;
-      else if (dl <= state.settings.warn[2]) r.w30 += b.remain;
-    }
-  });
-  return r;
-}
-function fefoPreview(accId, qty){
-  var bs = state.batches.filter(function(b){ return b.accountId===accId && batchStatus(b)==='active'; }).sort(function(a,b){
-    var da = a.expiresAt || '9999-12-31', db = b.expiresAt || '9999-12-31';
+function sorted(){
+  return accounts.slice().sort(function(a,b){
+    var da = a.nearDate || '9999-99-99', db = b.nearDate || '9999-99-99';
     if (da !== db) return da < db ? -1 : 1;
-    return a.obtainedAt < b.obtainedAt ? -1 : 1;
+    return String(a.name).localeCompare(String(b.name), 'zh');
   });
-  var need = qty, splits = [];
-  for (var i=0;i<bs.length && need>0;i++){
-    var take = Math.min(need, bs[i].remain);
-    splits.push({ batchId: bs[i].id, source: bs[i].source, qty: take, expiresAt: bs[i].expiresAt });
-    need -= take;
-  }
-  return { splits: splits, shortfall: need > 0 ? need : 0 };
-}
-function doEarn(accId, source, qty, obtainedAt, validityDays, note){
-  var expiresAt = validityDays > 0 ? addDays(obtainedAt, validityDays) : null;
-  var b = { id: uid('bat'), accountId: accId, source: source, qty: qty, obtainedAt: obtainedAt, validityDays: validityDays, expiresAt: expiresAt, remain: qty, note: note||'', createdAt: Date.now() };
-  state.batches.unshift(b);
-  state.tx.unshift({ id: uid('tx'), accountId: accId, type:'earn', qty: qty, date: obtainedAt, splits:[{batchId:b.id, source:source, qty:qty}], purpose: note || source, createdAt: Date.now() });
-  saveAll();
-  return b;
-}
-function doConsume(accId, qty, purpose, date){
-  var p = fefoPreview(accId, qty);
-  if (p.shortfall > 0) return { ok:false, shortfall: p.shortfall };
-  p.splits.forEach(function(s){
-    var b = state.batches.find(function(x){ return x.id === s.batchId; });
-    if (b) b.remain -= s.qty;
-  });
-  state.tx.unshift({ id: uid('tx'), accountId: accId, type:'consume', qty: qty, date: date, splits: p.splits, purpose: purpose||'', createdAt: Date.now() });
-  saveAll();
-  return { ok:true, splits: p.splits };
 }
 
 if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') (function(){
@@ -499,412 +172,94 @@ if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') (fun
     try {
       var b = document.getElementById('errBanner');
       if (!b){ b = document.createElement('div'); b.id = 'errBanner'; b.className = 'notice'; b.style.cssText = 'background:var(--red-soft);color:var(--red);margin:10px 16px 0'; document.body.insertBefore(b, document.body.firstChild); }
-      b.textContent = '运行出错：' + (e.message || '未知错误') + '（可先到设置导出备份，再重进页面）';
+      b.textContent = '运行出错：' + (e.message || '未知错误');
     } catch(err){}
   });
   function $(s){ return document.querySelector(s); }
-  function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._tm); t._tm = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+  function toast(msg){ var t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._tm); t._tm = setTimeout(function(){ t.classList.remove('show'); }, 2400); }
   function openModal(html){ document.getElementById('modalBox').innerHTML = html; document.getElementById('modalMask').classList.add('open'); }
   function closeModal(){ document.getElementById('modalMask').classList.remove('open'); }
   document.getElementById('modalMask').addEventListener('click', function(e){ if (e.target === this) closeModal(); });
   window.__closeModal = closeModal;
 
-  document.getElementById('tabBar').addEventListener('click', function(e){
-    var btn = e.target.closest('.tab'); if (!btn) return;
-    switchTab(btn.getAttribute('data-tab'));
-  });
-  function switchTab(name){
-    var tabs = document.querySelectorAll('.tab'); var i;
-    for (i=0;i<tabs.length;i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-tab')===name);
-    var panels = document.querySelectorAll('.panel');
-    for (i=0;i<panels.length;i++) panels[i].classList.toggle('active', panels[i].id === 'panel-' + name);
-    renderAll();
-  }
-
-  function fillAccountSelects(){
-    var opts = state.accounts.map(function(a){ return '<option value="' + a.id + '">' + esc(a.name) + '</option>'; }).join('');
-    ['earnAccount','conAccount','fltAccount','txFilter'].forEach(function(id){
-      var el = document.getElementById(id); var cur = el.value; el.innerHTML = (id==='fltAccount'||id==='txFilter' ? '<option value="">全部账号</option>' : '') + opts; el.value = cur;
-    });
-  }
-
-  function renderDash(){
-    var totalAv = 0, total7 = 0, monthCon = 0, wasted = 0;
-    var ym = today().slice(0,7);
-    state.accounts.forEach(function(a){ var s = accStats(a.id); totalAv += s.available; total7 += s.w7; wasted += s.wasted; });
-    state.tx.forEach(function(t){ if (t.type==='consume' && String(t.date).slice(0,7)===ym) monthCon += t.qty; });
-    document.getElementById('kpiGrid').innerHTML =
-      '<div class="kpi"><div class="k-label">全账号可用积分</div><div class="k-value">' + fmtNum(totalAv) + '</div></div>' +
-      '<div class="kpi red"><div class="k-label">7 天内到期</div><div class="k-value">' + fmtNum(total7) + '</div></div>' +
-      '<div class="kpi amber"><div class="k-label">本月消耗</div><div class="k-value">' + fmtNum(monthCon) + '</div></div>' +
-      '<div class="kpi"><div class="k-label">累计过期浪费</div><div class="k-value">' + fmtNum(wasted) + '</div></div>';
-    var cards = state.accounts.map(function(a){
-      var s = accStats(a.id);
-      var next = null;
-      state.batches.forEach(function(b){
-        if (b.accountId===a.id && batchStatus(b)==='active' && b.expiresAt){
-          if (!next || b.expiresAt < next.expiresAt) next = b;
-        }
-      });
-      var nextTxt = next ? ('最近到期：' + esc(next.source) + ' · ' + next.expiresAt + '（' + daysLeft(next.expiresAt) + ' 天）') : '暂无带有效期的批次';
-      return '<div class="acc-card" data-acc="' + a.id + '">' +
-        '<div class="acc-head"><span class="acc-name">' + esc(a.name) + '</span><span class="badge ' + (a.status==='正常'?'green':'gray') + '">' + esc(a.status) + '</span></div>' +
-        '<div class="acc-num">' + fmtNum(s.available) + '</div>' +
-        '<div class="acc-sub">可用积分 · ' + s.activeCount + ' 个有效批次</div>' +
-        '<div class="acc-sub">' + nextTxt + '</div>' +
-        (s.wasted > 0 ? '<div class="acc-sub" style="color:var(--red)">已过期浪费 ' + fmtNum(s.wasted) + '</div>' : '') +
-        '<div class="mini-bars"><span class="mb-red">7天 ' + fmtNum(s.w7) + '</span><span class="mb-amber">14天 ' + fmtNum(s.w14) + '</span><span class="mb-purple">30天 ' + fmtNum(s.w30) + '</span></div>' +
+  function render(){
+    var list = sorted();
+    document.getElementById('accList').innerHTML = list.map(function(a){
+      var totalHtml = (a.total === null || a.total === undefined || a.total === '')
+        ? '<div class="acc-total na">待录入</div><div class="acc-meta">总积分 · 暂无数据</div>'
+        : '<div class="acc-total">' + fmt(a.total) + '</div><div class="acc-meta">总积分 · ' + md(a.totalDate) + ' 统计</div>';
+      return '<div class="acc-card" data-edit="' + a.id + '">' +
+        '<div class="acc-row1"><span class="acc-name">' + esc(a.name) + '</span><button class="btn sm" data-edit="' + a.id + '">更新</button></div>' +
+        totalHtml +
+        '<div class="acc-near"><span class="n-label">最近到期积分</span>' + nearText(a) + '</div>' +
+        (a.note ? '<div class="acc-note">' + esc(a.note) + '</div>' : '') +
       '</div>';
-    }).join('');
-    document.getElementById('accGrid').innerHTML = cards || '<div class="empty">还没有账号，去「账号」页添加</div>';
-    Array.prototype.forEach.call(document.querySelectorAll('.acc-card'), function(el){
-      el.addEventListener('click', function(){ switchTab('batches'); document.getElementById('fltAccount').value = el.getAttribute('data-acc'); renderBatches(); });
+    }).join('') || '<div class="empty">还没有账号，点右上角「+ 新增账号」</div>';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-edit]'), function(el){
+      el.addEventListener('click', function(ev){ ev.stopPropagation(); openForm(accounts.filter(function(x){ return x.id === el.getAttribute('data-edit'); })[0]); });
     });
-    var list = [];
-    state.batches.forEach(function(b){
-      if (batchStatus(b)!=='active' || !b.expiresAt) return;
-      var dl = daysLeft(b.expiresAt);
-      if (dl <= state.settings.warn[2]) list.push({ b:b, dl:dl });
-    });
-    list.sort(function(x,y){ return x.dl - y.dl; });
-    document.getElementById('expireList').innerHTML = list.length ? ('<div class="table-scroll"><table><thead><tr><th>账号</th><th>来源</th><th>剩余</th><th>到期日</th><th>倒计时</th></tr></thead><tbody>' +
-      list.map(function(x){ return '<tr><td>' + esc(accName(x.b.accountId)) + '</td><td>' + esc(x.b.source) + '</td><td class="num">' + fmtNum(x.b.remain) + '</td><td>' + x.b.expiresAt + '</td><td>' + dlText(x.b) + '</td></tr>'; }).join('') + '</tbody></table></div>') : '<div class="empty">30 天内没有到期批次，安心</div>';
+    var filled = accounts.filter(function(a){ return a.total !== null && a.total !== undefined && a.total !== ''; }).length;
+    var lastDate = '';
+    accounts.forEach(function(a){ if (a.totalDate && a.totalDate > lastDate) lastDate = a.totalDate; });
+    document.getElementById('storageHint').textContent = filled + '/' + accounts.length + ' 个账号已录入' + (lastDate ? ' · 最近统计 ' + md(lastDate) : '') + (storageOK ? '' : ' · ⚠️当前环境禁本地存储，刷新丢失');
   }
 
-  function renderAccounts(){
-    var rows = state.accounts.map(function(a){
-      var s = accStats(a.id);
-      return '<tr><td><b>' + esc(a.name) + '</b>' + (a.alias ? '<div class="hint">' + esc(a.alias) + '</div>' : '') + '</td>' +
-        '<td>' + (esc(a.purpose) || '—') + '</td><td>' + (esc(a.contact) || '—') + '</td>' +
-        '<td><span class="badge ' + (a.status==='正常'?'green':'gray') + '">' + esc(a.status) + '</span></td>' +
-        '<td class="num">' + fmtNum(s.available) + '</td><td class="num">' + fmtNum(s.w7) + '</td>' +
-        '<td class="hint" style="max-width:260px">' + esc(a.note||'') + '</td>' +
-        '<td class="row-actions"><button class="btn sm" data-edit="' + a.id + '">编辑</button><button class="btn sm danger" data-del="' + a.id + '">删除</button></td></tr>';
-    }).join('');
-    document.getElementById('accountsTable').innerHTML = '<table><thead><tr><th>名称</th><th>用途</th><th>联系方式</th><th>状态</th><th>可用积分</th><th>7天内到期</th><th>备注</th><th>操作</th></tr></thead><tbody>' + (rows || '') + '</tbody></table>' + (state.accounts.length ? '' : '<div class="empty">还没有账号</div>');
-    Array.prototype.forEach.call(document.querySelectorAll('[data-edit]'), function(b){ b.addEventListener('click', function(){ openAccountModal(accById(b.getAttribute('data-edit'))); }); });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-del]'), function(b){ b.addEventListener('click', function(){
-      var id = b.getAttribute('data-del');
-      var cnt = state.batches.filter(function(x){ return x.accountId===id; }).length;
-      if (cnt > 0){ toast('该账号下还有 ' + cnt + ' 个批次，请先处理再删除'); return; }
-      openModal('<h3>删除账号</h3><p style="font-size:13.5px;margin-bottom:14px">确定删除「' + esc(accName(id)) + '」？此操作不可恢复。</p><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn danger" id="__delOk">确认删除</button></div>');
-      document.getElementById('__delOk').addEventListener('click', function(){
-        state.accounts = state.accounts.filter(function(a){ return a.id !== id; });
-        saveAll(); closeModal(); renderAll(); toast('已删除');
-      });
-    }); });
-  }
-
-  function renderBatches(){
-    var fa = document.getElementById('fltAccount').value;
-    var fs = document.getElementById('fltStatus').value;
-    var fr = document.getElementById('fltRange').value;
-    var rows = state.batches.filter(function(b){
-      if (fa && b.accountId !== fa) return false;
-      var st = batchStatus(b);
-      if (fs && st !== fs) return false;
-      if (fr){
-        if (fr === 'perm'){ if (b.expiresAt) return false; }
-        else if (fr === 'expired'){ if (st !== 'expired') return false; }
-        else { var dl = daysLeft(b.expiresAt); if (dl === null || dl < 0 || dl > Number(fr)) return false; }
-      }
-      return true;
-    }).sort(function(a,b){ return (a.expiresAt||'9999') < (b.expiresAt||'9999') ? -1 : 1; }).map(function(b){
-      return '<tr><td>' + esc(accName(b.accountId)) + '</td><td>' + esc(b.source) + '</td>' +
-        '<td class="num">' + fmtNum(b.qty) + '</td><td class="num">' + fmtNum(b.remain) + '</td>' +
-        '<td>' + b.obtainedAt + '</td><td>' + (b.expiresAt || '永久') + '</td><td>' + dlText(b) + '</td>' +
-        '<td class="hint" style="max-width:140px">' + esc(b.note||'') + '</td>' +
-        '<td class="row-actions"><button class="btn sm" data-bedit="' + b.id + '">编辑</button><button class="btn sm danger" data-bdel="' + b.id + '">删除</button></td></tr>';
-    }).join('');
-    document.getElementById('batchesTable').innerHTML = '<table><thead><tr><th>账号</th><th>来源</th><th>数量</th><th>剩余</th><th>获得日</th><th>到期日</th><th>状态/倒计时</th><th>备注</th><th>操作</th></tr></thead><tbody>' + (rows||'') + '</tbody></table>' + (rows ? '' : '<div class="empty">没有符合条件的批次</div>');
-    Array.prototype.forEach.call(document.querySelectorAll('[data-bedit]'), function(btn){ btn.addEventListener('click', function(){ openBatchModal(state.batches.find(function(x){ return x.id === btn.getAttribute('data-bedit'); })); }); });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-bdel]'), function(btn){ btn.addEventListener('click', function(){
-      var b = state.batches.find(function(x){ return x.id === btn.getAttribute('data-bdel'); });
-      openModal('<h3>删除批次</h3><p style="font-size:13.5px;margin-bottom:14px">确定删除「' + esc(b.source) + '」批次（剩余 ' + fmtNum(b.remain) + '）？删除后不可恢复，余额会同步减少。</p><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn danger" id="__bdelOk">确认删除</button></div>');
-      document.getElementById('__bdelOk').addEventListener('click', function(){
-        state.batches = state.batches.filter(function(x){ return x.id !== b.id; });
-        saveAll(); closeModal(); renderAll(); toast('批次已删除');
-      });
-    }); });
-  }
-
-  var calCursor = (function(){ var d = new Date(); return { y: d.getFullYear(), m: d.getMonth() }; })();
-  function renderCalendar(){
-    var y = calCursor.y, m = calCursor.m;
-    document.getElementById('calTitle').textContent = y + ' 年 ' + (m+1) + ' 月';
-    var dows = ['一','二','三','四','五','六','日'];
-    document.getElementById('calDowRow').innerHTML = dows.map(function(d){ return '<div class="cal-dow">' + d + '</div>'; }).join('');
-    var first = new Date(y, m, 1);
-    var startOffset = (first.getDay() + 6) % 7;
-    var daysInMonth = new Date(y, m+1, 0).getDate();
-    var expMap = {};
-    state.batches.forEach(function(b){
-      if (batchStatus(b)!=='active' || !b.expiresAt) return;
-      expMap[b.expiresAt] = (expMap[b.expiresAt]||0) + b.remain;
-    });
-    var html = '', i, cellDate, exp, dl;
-    var prevDays = new Date(y, m, 0).getDate();
-    for (i=0;i<startOffset;i++){
-      html += '<div class="cal-day dim"><div class="d-num">' + (prevDays - startOffset + 1 + i) + '</div></div>';
-    }
-    for (i=1;i<=daysInMonth;i++){
-      cellDate = y + '-' + pad(m+1) + '-' + pad(i);
-      var cls = 'cal-day' + (cellDate === today() ? ' today' : '');
-      exp = expMap[cellDate];
-      var inner = '<div class="d-num">' + i + '</div>';
-      if (exp){
-        dl = daysLeft(cellDate);
-        var c = dl <= state.settings.warn[0] ? 'var(--red)' : (dl <= state.settings.warn[1] ? 'var(--amber)' : (dl <= state.settings.warn[2] ? 'var(--purple-mid)' : 'var(--purple2)'));
-        inner += '<div class="d-exp" style="background:' + c + '">到期 ' + fmtNum(exp) + '</div>';
-      }
-      html += '<div class="' + cls + '" title="' + cellDate + (exp ? ' 到期 ' + exp + ' 积分' : '') + '">' + inner + '</div>';
-    }
-    var totalCells = startOffset + daysInMonth;
-    var trail = (7 - totalCells % 7) % 7;
-    for (i=1;i<=trail;i++) html += '<div class="cal-day dim"><div class="d-num">' + i + '</div></div>';
-    document.getElementById('calGrid').innerHTML = html;
-  }
-  document.getElementById('calPrev').addEventListener('click', function(){ calCursor.m--; if (calCursor.m<0){ calCursor.m=11; calCursor.y--; } renderCalendar(); });
-  document.getElementById('calNext').addEventListener('click', function(){ calCursor.m++; if (calCursor.m>11){ calCursor.m=0; calCursor.y++; } renderCalendar(); });
-
-  function renderTx(){
-    var f = document.getElementById('txFilter').value;
-    var rows = state.tx.filter(function(t){ return !f || t.accountId===f; }).slice(0, 300).map(function(t){
-      var typeBadge = t.type==='earn' ? '<span class="badge green">获得</span>' : '<span class="badge purple">消耗</span>';
-      var detail = (t.splits||[]).map(function(s){ return esc(s.source||'') + '×' + fmtNum(s.qty); }).join('，') || '—';
-      return '<tr><td>' + t.date + '</td><td>' + esc(accName(t.accountId)) + '</td><td>' + typeBadge + '</td><td class="num">' + fmtNum(t.qty) + '</td><td class="hint">' + detail + '</td><td>' + esc(t.purpose||'') + '</td></tr>';
-    }).join('');
-    document.getElementById('txTable').innerHTML = '<table><thead><tr><th>日期</th><th>账号</th><th>类型</th><th>数量</th><th>拆分明细（FEFO）</th><th>用途</th></tr></thead><tbody>' + (rows||'') + '</tbody></table>' + (rows?'':'<div class="empty">还没有流水</div>');
-  }
-
-  function renderRecon(){
-    var rows = state.accounts.map(function(a){
-      var s = accStats(a.id);
-      var lastSnap = null;
-      state.snaps.forEach(function(sp){ if (sp.accountId===a.id && (!lastSnap || sp.date > lastSnap.date)) lastSnap = sp; });
-      var diff = lastSnap ? lastSnap.actual - s.available : null;
-      var diffTxt = diff === null ? '—' : (diff > 0 ? '<span style="color:var(--green);font-weight:700">+' + fmtNum(diff) + '（疑似漏记收入）</span>' : (diff < 0 ? '<span style="color:var(--red);font-weight:700">' + fmtNum(diff) + '（疑似漏记消耗/已过期）</span>' : '<span class="badge green">一致</span>'));
-      return '<tr><td><b>' + esc(a.name) + '</b></td><td class="num">' + fmtNum(s.available) + '</td>' +
-        '<td><input type="number" id="rc_' + a.id + '" placeholder="App 内实际余额" style="width:130px"/></td>' +
-        '<td><input type="date" id="rcd_' + a.id + '" value="' + today() + '" style="width:140px"/></td>' +
-        '<td><button class="btn sm" data-rc="' + a.id + '">存快照</button></td>' +
-        '<td>' + (lastSnap ? (lastSnap.date + ' 实际 ' + fmtNum(lastSnap.actual)) : '暂无快照') + '</td><td>' + diffTxt + '</td></tr>';
-    }).join('');
-    document.getElementById('reconTable').innerHTML = '<table><thead><tr><th>账号</th><th>系统计算可用</th><th>实际余额</th><th>快照日期</th><th></th><th>最近快照</th><th>差异</th></tr></thead><tbody>' + rows + '</tbody></table>';
-    Array.prototype.forEach.call(document.querySelectorAll('[data-rc]'), function(btn){ btn.addEventListener('click', function(){
-      var id = btn.getAttribute('data-rc');
-      var v = document.getElementById('rc_' + id).value;
-      var d = document.getElementById('rcd_' + id).value || today();
-      if (v === '' || isNaN(Number(v))){ toast('先填写实际余额'); return; }
-      state.snaps.unshift({ id: uid('snap'), accountId: id, actual: Number(v), date: d, createdAt: Date.now() });
-      saveAll(); renderRecon(); renderSnaps(); toast('快照已保存');
-    }); });
-  }
-  function renderSnaps(){
-    var rows = state.snaps.slice(0, 30).map(function(sp){
-      return '<tr><td>' + sp.date + '</td><td>' + esc(accName(sp.accountId)) + '</td><td class="num">' + fmtNum(sp.actual) + '</td></tr>';
-    }).join('');
-    document.getElementById('snapTable').innerHTML = '<table><thead><tr><th>日期</th><th>账号</th><th>实际余额</th></tr></thead><tbody>' + (rows||'') + '</tbody></table>' + (rows?'':'<div class="empty">还没有快照</div>');
-  }
-
-  function renderStats(){
-    var max = 0;
-    var stats = state.accounts.map(function(a){ var s = accStats(a.id); if (s.available > max) max = s.available; return { a:a, s:s }; });
-    document.getElementById('statBars').innerHTML = stats.map(function(x){
-      var w = max > 0 ? Math.max(2, Math.round(x.s.available / max * 100)) : 2;
-      return '<div class="bar-row"><span class="bar-name">' + esc(x.a.name) + '</span><div class="bar-track"><div class="bar-fill" style="width:' + w + '%"></div></div><span class="bar-val">' + fmtNum(x.s.available) + '</span></div>';
-    }).join('') || '<div class="empty">暂无数据</div>';
-    var tW7=0, tW14=0, tW30=0, tRest=0, tWaste=0;
-    stats.forEach(function(x){ tW7+=x.s.w7; tW14+=x.s.w14; tW30+=x.s.w30; tWaste+=x.s.wasted; tRest += x.s.available - x.s.w7 - x.s.w14 - x.s.w30; });
-    var tot = tW7+tW14+tW30+tRest;
-    function seg(v, c){ return tot>0 && v>0 ? '<div style="width:' + (v/tot*100) + '%;background:' + c + '" title="' + fmtNum(v) + '"></div>' : ''; }
-    document.getElementById('statStack').innerHTML =
-      '<div class="stack-bar">' + seg(tW7,'var(--red)') + seg(tW14,'var(--amber)') + seg(tW30,'var(--purple-mid)') + seg(tRest,'var(--purple2)') + '</div>' +
-      '<div class="hint">7 天内 ' + fmtNum(tW7) + ' · 14 天内 ' + fmtNum(tW14) + ' · 30 天内 ' + fmtNum(tW30) + ' · 30 天以上/永久 ' + fmtNum(tRest) + ' · 累计过期浪费 ' + fmtNum(tWaste) + '</div>';
-    var months = {};
-    state.tx.forEach(function(t){ if (t.type!=='consume') return; var k = String(t.date).slice(0,7); months[k] = (months[k]||0) + t.qty; });
-    var keys = Object.keys(months).sort().reverse();
-    document.getElementById('statMonth').innerHTML = keys.length ? ('<table><thead><tr><th>月份</th><th>消耗合计</th></tr></thead><tbody>' + keys.map(function(k){ return '<tr><td>' + k + '</td><td class="num">' + fmtNum(months[k]) + '</td></tr>'; }).join('') + '</tbody></table>') : '<div class="empty">还没有消耗记录</div>';
-  }
-
-  function renderSettings(){
-    document.getElementById('warnRed').value = state.settings.warn[0];
-    document.getElementById('warnOrange').value = state.settings.warn[1];
-    document.getElementById('warnYellow').value = state.settings.warn[2];
-    var size = 0;
-    try { size = JSON.stringify({ a:state.accounts, b:state.batches, t:state.tx, s:state.snaps }).length; } catch(e){}
-    document.getElementById('storageHint').textContent = '当前数据约 ' + (size/1024).toFixed(1) + ' KB · 账号 ' + state.accounts.length + ' · 批次 ' + state.batches.length + ' · 流水 ' + state.tx.length + ' · 快照 ' + state.snaps.length;
-  }
-
-  function renderAll(){ fillAccountSelects(); renderDash(); renderAccounts(); renderBatches(); renderCalendar(); renderTx(); renderRecon(); renderSnaps(); renderStats(); renderSettings(); }
-
-  function openAccountModal(acc){
-    var a = acc || { name:'', alias:'', purpose:'', contact:'', status:'正常', note:'' };
-    openModal('<h3>' + (acc ? '编辑账号' : '新增账号') + '</h3><div class="form-grid">' +
-      '<div><label>名称</label><input id="f_name" value="' + esc(a.name) + '" placeholder="账号名称"/></div>' +
-      '<div><label>别名/显示名（可选）</label><input id="f_alias" value="' + esc(a.alias) + '"/></div>' +
-      '<div><label>用途</label><select id="f_purpose"><option value="">—</option><option' + (a.purpose==='主力'?' selected':'') + '>主力</option><option' + (a.purpose==='采集'?' selected':'') + '>采集</option><option' + (a.purpose==='测试'?' selected':'') + '>测试</option><option' + (a.purpose==='其他'?' selected':'') + '>其他</option></select></div>' +
-      '<div><label>联系方式（脱敏，可选）</label><input id="f_contact" value="' + esc(a.contact) + '" placeholder="如 138****1234"/></div>' +
-      '<div><label>状态</label><select id="f_status"><option' + (a.status==='正常'?' selected':'') + '>正常</option><option' + (a.status==='冻结'?' selected':'') + '>冻结</option><option' + (a.status==='注销'?' selected':'') + '>注销</option></select></div>' +
-      '<div class="full"><label>备注（如 user_id）</label><input id="f_note" value="' + esc(a.note) + '"/></div>' +
-      '</div><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn primary" id="f_save">保存</button></div>');
+  function openForm(acc){
+    var a = acc || { name:'', total:'', totalDate: today(), nearAmt:'', nearDate:'', note:'' };
+    openModal('<h3>' + (acc ? '更新积分' : '新增账号') + '</h3><div class="form-grid">' +
+      '<div class="full"><label>名称</label><input id="f_name" value="' + esc(a.name) + '" placeholder="账号名称"/></div>' +
+      '<div><label>总积分</label><input type="number" id="f_total" step="any" min="0" value="' + (a.total===null||a.total===undefined?'':a.total) + '" placeholder="App 内剩余总数"/></div>' +
+      '<div><label>统计日期</label><input type="date" id="f_totalDate" value="' + (a.totalDate || today()) + '"/></div>' +
+      '<div><label>最近到期积分</label><input type="number" id="f_nearAmt" step="any" min="0" value="' + (a.nearAmt===null||a.nearAmt===undefined?'':a.nearAmt) + '" placeholder="最早到期那笔的剩余量"/></div>' +
+      '<div><label>该笔到期日期</label><input type="date" id="f_nearDate" value="' + (a.nearDate || '') + '"/></div>' +
+      '<div class="full"><label>备注（可选）</label><input id="f_note" value="' + esc(a.note) + '"/></div>' +
+      '</div><div class="form-actions">' +
+      (acc ? '<button class="btn danger" id="f_del">删除</button>' : '') +
+      '<button class="btn" onclick="window.__closeModal()">取消</button>' +
+      '<button class="btn primary" id="f_save">保存</button></div>');
     document.getElementById('f_save').addEventListener('click', function(){
       var name = document.getElementById('f_name').value.trim();
       if (!name){ toast('名称不能为空'); return; }
-      var data = { name:name, alias:document.getElementById('f_alias').value.trim(), purpose:document.getElementById('f_purpose').value, contact:document.getElementById('f_contact').value.trim(), status:document.getElementById('f_status').value, note:document.getElementById('f_note').value.trim() };
-      if (acc){ for (var k in data) acc[k] = data[k]; toast('账号已更新'); }
-      else { state.accounts.push(Object.assign({ id: uid('acc') }, data)); toast('账号已添加'); }
-      saveAll(); closeModal(); renderAll();
+      var num = function(id){ var v = document.getElementById(id).value; return v === '' ? null : Number(v); };
+      var data = {
+        name: name,
+        total: num('f_total'),
+        totalDate: document.getElementById('f_totalDate').value || '',
+        nearAmt: num('f_nearAmt'),
+        nearDate: document.getElementById('f_nearDate').value || '',
+        note: document.getElementById('f_note').value.trim()
+      };
+      if (data.total !== null && !data.totalDate){ data.totalDate = today(); }
+      if (acc){ for (var k in data) acc[k] = data[k]; toast('已更新'); }
+      else { accounts.push(Object.assign({ id: uid() }, data)); toast('已添加'); }
+      save(); closeModal(); render();
     });
-  }
-  document.getElementById('addAccountBtn').addEventListener('click', function(){ openAccountModal(null); });
-
-  function openBatchModal(b){
-    var isEdit = !!b;
-    var vd = isEdit ? b.validityDays : 30;
-    var vSel = (vd===30||vd===90||vd===365||vd===0) ? String(vd) : 'custom';
-    openModal('<h3>' + (isEdit ? '编辑批次' : '录入积分（获得）') + '</h3><div class="form-grid">' +
-      '<div><label>账号</label><select id="b_account">' + state.accounts.map(function(a){ return '<option value="' + a.id + '"' + (isEdit && b.accountId===a.id ? ' selected' : '') + '>' + esc(a.name) + '</option>'; }).join('') + '</select></div>' +
-      '<div><label>来源</label><select id="b_source"><option' + (!isEdit||b.source==='订阅赠送'?' selected':'') + '>订阅赠送</option><option' + (isEdit&&b.source==='活动赠送'?' selected':'') + '>活动赠送</option><option' + (isEdit&&b.source==='购买'?' selected':'') + '>购买</option><option' + (isEdit&&b.source==='任务奖励'?' selected':'') + '>任务奖励</option><option' + (isEdit&&b.source==='其他'?' selected':'') + '>其他</option></select></div>' +
-      '<div><label>数量</label><input type="number" id="b_qty" min="1" value="' + (isEdit ? b.qty : '') + '"/></div>' +
-      '<div><label>获得日期</label><input type="date" id="b_date" value="' + (isEdit ? b.obtainedAt : today()) + '"/></div>' +
-      '<div><label>有效期</label><select id="b_validity"><option value="30"' + (vSel==='30'?' selected':'') + '>30 天</option><option value="90"' + (vSel==='90'?' selected':'') + '>90 天</option><option value="365"' + (vSel==='365'?' selected':'') + '>365 天</option><option value="0"' + (vSel==='0'?' selected':'') + '>永久</option><option value="custom"' + (vSel==='custom'?' selected':'') + '>自定义天数</option></select></div>' +
-      '<div id="b_customWrap" style="display:' + (vSel==='custom'?'block':'none') + '"><label>自定义天数</label><input type="number" id="b_customDays" min="1" value="' + (vSel==='custom'?vd:'') + '"/></div>' +
-      '<div class="full"><label>备注（可选）</label><input id="b_note" value="' + esc(isEdit ? (b.note||'') : '') + '"/></div>' +
-      '<div class="full hint" id="b_expHint"></div>' +
-      '</div><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn primary" id="b_save">保存</button></div>');
-    function hint(){
-      var v = document.getElementById('b_validity').value;
-      var days = v === 'custom' ? Number(document.getElementById('b_customDays').value) : Number(v);
-      var d = document.getElementById('b_date').value || today();
-      document.getElementById('b_customWrap').style.display = v==='custom' ? 'block' : 'none';
-      document.getElementById('b_expHint').textContent = days > 0 ? ('到期日：' + addDays(d, days)) : '永久有效，不会过期';
+    if (acc){
+      document.getElementById('f_del').addEventListener('click', function(){
+        openModal('<h3>删除账号</h3><p style="font-size:13.5px;margin-bottom:14px">确定删除「' + esc(acc.name) + '」？不可恢复。</p><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn danger" id="__delOk">确认删除</button></div>');
+        document.getElementById('__delOk').addEventListener('click', function(){
+          accounts = accounts.filter(function(x){ return x.id !== acc.id; });
+          save(); closeModal(); render(); toast('已删除');
+        });
+      });
     }
-    document.getElementById('b_validity').addEventListener('change', hint);
-    document.getElementById('b_customDays').addEventListener('input', hint);
-    document.getElementById('b_date').addEventListener('input', hint);
-    hint();
-    document.getElementById('b_save').addEventListener('click', function(){
-      var qty = Number(document.getElementById('b_qty').value);
-      if (!qty || qty <= 0){ toast('数量必须大于 0'); return; }
-      var v = document.getElementById('b_validity').value;
-      var days = v === 'custom' ? Number(document.getElementById('b_customDays').value) : Number(v);
-      if (v === 'custom' && (!days || days <= 0)){ toast('请填写有效的自定义天数'); return; }
-      var data = { accountId: document.getElementById('b_account').value, source: document.getElementById('b_source').value, qty: qty, obtainedAt: document.getElementById('b_date').value || today(), validityDays: days, note: document.getElementById('b_note').value.trim() };
-      if (isEdit){
-        var delta = qty - b.qty;
-        b.accountId = data.accountId; b.source = data.source; b.qty = qty; b.obtainedAt = data.obtainedAt; b.validityDays = days; b.note = data.note;
-        b.expiresAt = days > 0 ? addDays(data.obtainedAt, days) : null;
-        b.remain = Math.max(0, b.remain + delta);
-        toast('批次已更新');
-      } else { doEarn(data.accountId, data.source, qty, data.obtainedAt, days, data.note); toast('已录入 ' + fmtNum(qty) + ' 积分'); }
-      saveAll(); closeModal(); renderAll();
-    });
   }
-  document.getElementById('addBatchBtn').addEventListener('click', function(){ openBatchModal(null); });
-
-  var recMode = 'earn';
-  function setRecMode(m){
-    recMode = m;
-    document.getElementById('modeEarn').className = 'btn sm';
-    document.getElementById('modeConsume').className = 'btn sm';
-    if (m === 'earn') document.getElementById('modeEarn').className = 'btn primary sm';
-    if (m === 'consume') document.getElementById('modeConsume').className = 'btn primary sm';
-    document.getElementById('earnForm').style.display = m==='earn' ? 'block' : 'none';
-    document.getElementById('consumeForm').style.display = m==='consume' ? 'block' : 'none';
-  }
-  document.getElementById('modeEarn').addEventListener('click', function(){ setRecMode('earn'); });
-  document.getElementById('modeConsume').addEventListener('click', function(){ setRecMode('consume'); });
-
-  document.getElementById('earnValidity').addEventListener('change', function(){
-    var v = this.value;
-    document.getElementById('earnCustomWrap').style.display = v==='custom' ? 'block' : 'none';
-    var days = v==='custom' ? Number(document.getElementById('earnCustomDays').value) : Number(v);
-    var d = document.getElementById('earnDate').value || today();
-    document.getElementById('earnExpireHint').textContent = days > 0 ? ('到期日：' + addDays(d, days)) : '永久有效';
-  });
-  document.getElementById('earnCustomDays').addEventListener('input', function(){
-    var days = Number(this.value); var d = document.getElementById('earnDate').value || today();
-    if (days > 0) document.getElementById('earnExpireHint').textContent = '到期日：' + addDays(d, days);
-  });
-  document.getElementById('earnSubmit').addEventListener('click', function(){
-    var acc = document.getElementById('earnAccount').value;
-    var qty = Number(document.getElementById('earnQty').value);
-    if (!acc){ toast('先选择账号'); return; }
-    if (!qty || qty <= 0){ toast('数量必须大于 0'); return; }
-    var v = document.getElementById('earnValidity').value;
-    var days = v==='custom' ? Number(document.getElementById('earnCustomDays').value) : Number(v);
-    if (v==='custom' && (!days || days<=0)){ toast('请填写有效的自定义天数'); return; }
-    var b = doEarn(acc, document.getElementById('earnSource').value, qty, document.getElementById('earnDate').value || today(), days, document.getElementById('earnNote').value.trim());
-    toast('已录入「' + accName(acc) + '」' + fmtNum(qty) + ' 积分' + (b.expiresAt ? '，' + b.expiresAt + ' 到期' : '，永久有效'));
-    document.getElementById('earnQty').value = ''; document.getElementById('earnNote').value = '';
-    renderAll();
-  });
-
-  function conPreview(){
-    var acc = document.getElementById('conAccount').value;
-    var qty = Number(document.getElementById('conQty').value);
-    var box = document.getElementById('conPreview');
-    var sf = document.getElementById('conShortfall');
-    if (!acc || !qty || qty <= 0){ box.innerHTML = ''; sf.textContent = ''; return; }
-    var p = fefoPreview(acc, qty);
-    var avail = 0;
-    state.batches.forEach(function(b){ if (b.accountId===acc && batchStatus(b)==='active') avail += b.remain; });
-    box.innerHTML = '<div class="hint" style="margin-bottom:6px">将按「先到期优先」自动从以下批次扣除（可用 ' + fmtNum(avail) + '）：</div>' +
-      (p.splits.length ? p.splits.map(function(s){ return '<div class="split-row"><span>' + esc(s.source) + (s.expiresAt ? '（' + s.expiresAt + ' 到期）' : '（永久）') + '</span><span>-' + fmtNum(s.qty) + '</span></div>'; }).join('') : '<div class="hint">该账号没有可用批次</div>');
-    sf.textContent = p.shortfall > 0 ? ('积分不足：还差 ' + fmtNum(p.shortfall) + '，请先录入或减少数量') : '';
-  }
-  document.getElementById('conAccount').addEventListener('change', conPreview);
-  document.getElementById('conQty').addEventListener('input', conPreview);
-  document.getElementById('conSubmit').addEventListener('click', function(){
-    var acc = document.getElementById('conAccount').value;
-    var qty = Number(document.getElementById('conQty').value);
-    if (!acc){ toast('先选择账号'); return; }
-    if (!qty || qty <= 0){ toast('数量必须大于 0'); return; }
-    var r = doConsume(acc, qty, document.getElementById('conPurpose').value.trim(), document.getElementById('conDate').value || today());
-    if (!r.ok){ toast('积分不足，还差 ' + fmtNum(r.shortfall)); return; }
-    toast('已扣除 ' + fmtNum(qty) + ' 积分（先到期优先，共 ' + r.splits.length + ' 个批次）');
-    document.getElementById('conQty').value = ''; document.getElementById('conPurpose').value = '';
-    conPreview(); renderAll();
-  });
-
-  ['fltAccount','fltStatus','fltRange'].forEach(function(id){ document.getElementById(id).addEventListener('change', renderBatches); });
-  document.getElementById('txFilter').addEventListener('change', renderTx);
-
-  document.getElementById('saveWarn').addEventListener('click', function(){
-    var r = Number(document.getElementById('warnRed').value) || 7;
-    var o = Number(document.getElementById('warnOrange').value) || 14;
-    var y = Number(document.getElementById('warnYellow').value) || 30;
-    state.settings.warn = [r, o, y]; saveAll(); renderAll(); toast('阈值已保存');
-  });
+  document.getElementById('addBtn').addEventListener('click', function(){ openForm(null); });
 
   function download(name, text, mime){
-    var blob = new Blob([text], { type: mime || 'text/plain;charset=utf-8' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    var blob = new Blob([text], { type: mime || 'application/json' });
+    var el = document.createElement('a');
+    el.href = URL.createObjectURL(blob); el.download = name;
+    document.body.appendChild(el); el.click();
+    setTimeout(function(){ URL.revokeObjectURL(el.href); el.remove(); }, 500);
   }
-  function toCsv(rows){
-    return '\uFEFF' + rows.map(function(r){ return r.map(function(c){ c = String(c==null?'':c); return /[",\n]/.test(c) ? '"' + c.replace(/"/g,'""') + '"' : c; }).join(','); }).join('\r\n');
-  }
-  function exportJson(){
-    download('积分统计备份_' + today() + '.json', JSON.stringify({ accounts: state.accounts, batches: state.batches, tx: state.tx, snaps: state.snaps, settings: state.settings }, null, 2), 'application/json');
-    toast('已导出 JSON 备份');
-  }
-  document.getElementById('exportJson').addEventListener('click', exportJson);
-  document.getElementById('quickBackup').addEventListener('click', exportJson);
-  document.getElementById('exportBatchCsv').addEventListener('click', function(){
-    var rows = [['账号','来源','数量','剩余','获得日期','到期日期','状态','备注']];
-    state.batches.forEach(function(b){ rows.push([accName(b.accountId), b.source, b.qty, b.remain, b.obtainedAt, b.expiresAt||'永久', batchStatus(b), b.note||'']); });
-    download('积分批次_' + today() + '.csv', toCsv(rows), 'text/csv;charset=utf-8');
-    toast('已导出批次 CSV');
+  document.getElementById('exportJson').addEventListener('click', function(){
+    download('积分统计备份_' + today() + '.json', JSON.stringify({ accounts: accounts }, null, 2));
+    toast('已导出备份');
   });
-  document.getElementById('exportTxCsv').addEventListener('click', function(){
-    var rows = [['日期','账号','类型','数量','拆分明细','用途']];
-    state.tx.forEach(function(t){ rows.push([t.date, accName(t.accountId), t.type==='earn'?'获得':'消耗', t.qty, (t.splits||[]).map(function(s){ return (s.source||'')+'×'+s.qty; }).join('；'), t.purpose||'']); });
-    download('积分流水_' + today() + '.csv', toCsv(rows), 'text/csv;charset=utf-8');
-    toast('已导出流水 CSV');
+  document.getElementById('quickBackup').addEventListener('click', function(){
+    download('积分统计备份_' + today() + '.json', JSON.stringify({ accounts: accounts }, null, 2));
+    toast('已导出备份');
   });
   document.getElementById('importJson').addEventListener('change', function(e){
     var f = e.target.files[0]; if (!f) return;
@@ -912,12 +267,12 @@ if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') (fun
     rd.onload = function(){
       try {
         var d = JSON.parse(rd.result);
-        if (!d || !Array.isArray(d.accounts) || !Array.isArray(d.batches)){ toast('文件格式不对'); return; }
-        openModal('<h3>导入备份</h3><p style="font-size:13.5px;margin-bottom:14px">导入将<b>覆盖</b>当前所有数据（账号 ' + d.accounts.length + ' · 批次 ' + d.batches.length + ' · 流水 ' + (d.tx||[]).length + '）。建议先导出一次当前数据再导入。</p><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn primary" id="__impOk">确认覆盖导入</button></div>');
+        var arr = Array.isArray(d) ? d : d.accounts;
+        if (!Array.isArray(arr) || !arr.length || !arr[0].name){ toast('文件格式不对'); return; }
+        openModal('<h3>导入备份</h3><p style="font-size:13.5px;margin-bottom:14px">导入将<b>覆盖</b>当前 ' + accounts.length + ' 个账号记录。建议先导出一份再操作。</p><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn primary" id="__impOk">确认导入</button></div>');
         document.getElementById('__impOk').addEventListener('click', function(){
-          state.accounts = d.accounts; state.batches = d.batches; state.tx = d.tx || []; state.snaps = d.snaps || [];
-          if (d.settings && Array.isArray(d.settings.warn)) state.settings = d.settings;
-          saveAll(); closeModal(); renderAll(); toast('导入完成');
+          accounts = arr.map(function(x){ return { id: x.id || uid(), name: x.name || '未命名', total: (x.total===undefined?null:x.total), totalDate: x.totalDate||'', nearAmt: (x.nearAmt===undefined?null:x.nearAmt), nearDate: x.nearDate||'', note: x.note||'' }; });
+          save(); closeModal(); render(); toast('导入完成');
         });
       } catch(err){ toast('解析失败：' + err.message); }
     };
@@ -925,18 +280,21 @@ if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') (fun
     e.target.value = '';
   });
   document.getElementById('clearAll').addEventListener('click', function(){
-    openModal('<h3>清空所有数据</h3><p style="font-size:13.5px;margin-bottom:14px">将删除全部账号、批次、流水、快照，<b>不可恢复</b>。输入「确认」二字执行。</p><input id="__clearTxt" placeholder="输入 确认"/><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn danger" id="__clearOk">执行清空</button></div>');
+    openModal('<h3>清空所有数据</h3><p style="font-size:13.5px;margin-bottom:14px">将删除全部账号记录，<b>不可恢复</b>。输入「确认」二字执行。</p><input id="__clearTxt" placeholder="输入 确认"/><div class="form-actions"><button class="btn" onclick="window.__closeModal()">取消</button><button class="btn danger" id="__clearOk">执行清空</button></div>');
     document.getElementById('__clearOk').addEventListener('click', function(){
       if (document.getElementById('__clearTxt').value.trim() !== '确认'){ toast('输入不正确，未执行'); return; }
-      state.accounts = []; state.batches = []; state.tx = []; state.snaps = [];
-      saveAll(); closeModal(); renderAll(); toast('已清空');
+      accounts = []; save(); closeModal(); render(); toast('已清空');
     });
   });
 
-  setRecMode('earn');
-  document.getElementById('earnDate').value = today();
-  document.getElementById('conDate').value = today();
-  renderAll();
+  if (!storageOK) {
+    var b = document.createElement('div');
+    b.className = 'notice';
+    b.style.cssText = 'background:var(--red-soft);color:var(--red);margin:10px 16px 0';
+    b.textContent = '当前环境禁止本地存储（预览窗口常见限制），数据刷新后会丢失。请保存文件到电脑上用浏览器打开。';
+    document.body.insertBefore(b, document.body.firstChild);
+  }
+  render();
 })();
 </script>
 </body>

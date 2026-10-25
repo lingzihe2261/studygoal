@@ -1709,6 +1709,9 @@ body{background:#FFFFFF!important}
     <button data-action="tab" data-tab="aroma">
       <span class="emo">🌿</span><span class="lbl">芳疗精油</span>
     </button>
+    <button data-action="tab" data-tab="skin">
+      <span class="emo">🧪</span><span class="lbl">护肤科学</span>
+    </button>
     <button data-action="tab" data-tab="tcmstudy">
       <span class="emo">🌱</span><span class="lbl">中医自学</span>
     </button>
@@ -4554,11 +4557,11 @@ function weekSummary(ws){
 }
 
 /* ============ 状态 ============ */
-let activeTab=(function(){try{const t=localStorage.getItem('wb_studygoal_tab');if(t&&['dol','punch','diet','today','speak','aroma','tcm','mine','ai','media','blog','zhitink'].indexOf(t)>=0)return t;}catch(e){}return 'punch';})();
+let activeTab=(function(){try{const t=localStorage.getItem('wb_studygoal_tab');if(t&&['dol','punch','diet','today','speak','aroma','tcm','mine','ai','media','blog','zhitink','skin'].indexOf(t)>=0)return t;}catch(e){}return 'punch';})();
 (function(){try{
   const h=location.hash||'';
   const m=h.match(/#\/tab=([a-z]+)/);
-  if(m&&['dol','punch','diet','today','speak','aroma','tcm','mine','ai','media','blog','zhitink'].indexOf(m[1])>=0){
+  if(m&&['dol','punch','diet','today','speak','aroma','tcm','mine','ai','media','blog','zhitink','skin'].indexOf(m[1])>=0){
     activeTab=m[1];localStorage.setItem('wb_studygoal_tab',m[1]);
   }else if(/#\/checkin=goal/.test(h)){
     activeTab='dol';localStorage.setItem('wb_studygoal_tab','dol');
@@ -4640,6 +4643,7 @@ function refreshAll(){
   else if(activeTab==='today')renderDol();
   else if(activeTab==='speak')renderSpeak();
   else if(activeTab==='aroma')renderAroma();
+  else if(activeTab==='skin')renderSkin();
   else if(activeTab==='blog')renderBlog();
   else if(activeTab==='morning')renderMorning();
   else if(activeTab==='ai')renderAI();
@@ -9205,7 +9209,7 @@ function ztAdvSave(){
 }
 function renderMine(){
   let html='';
-  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v352</div></div>';
+  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v353</div></div>';
   html+='<div class="mine-card"><h3>数据备份</h3><p>所有数据存在本机浏览器，导出 JSON 可随身保存或换设备恢复。</p>'+
     '<div class="mine-row"><button class="btn-primary" data-action="export" style="box-shadow:none">导出 JSON 备份</button>'+
     '<button class="btn-ghost" data-action="import">导入并覆盖</button></div></div>';
@@ -9953,11 +9957,16 @@ async function reauthBackupDir(){
 }
 function backupMarkReauth(){try{localStorage.setItem(BACKUP_DIR_NEEDREAUTH,'1');}catch(e){}}
 function needBackupReauth(){try{return localStorage.getItem(BACKUP_DIR_NEEDREAUTH)==='1';}catch(e){return false;}}
+function backupPayload(){
+  var p=Object.assign({},state);
+  try{var hz=localStorage.getItem('haodazi_tie_v1');if(hz)p._haodazi=JSON.parse(hz);}catch(e){}
+  return p;
+}
 function exportJSON(){
   const n=new Date(),p=function(x){return String(x).padStart(2,'0');};
   const ts=n.getFullYear()+p(n.getMonth()+1)+p(n.getDate())+'_'+p(n.getHours())+p(n.getMinutes())+p(n.getSeconds());
   const filename='子禾工作台_备份_'+ts+'.json';
-  const text=JSON.stringify(state,null,2);
+  const text=JSON.stringify(backupPayload(),null,2);
   writeBackupFile(filename,text).then(function(res){
     toast('已导出 '+(res.dir?('→ '+res.dir+' / '):'')+ts);
   });
@@ -9970,7 +9979,7 @@ function dailyBackupCheck(){
   const n=new Date(),p=function(x){return String(x).padStart(2,'0');};
   const ts=n.getFullYear()+p(n.getMonth()+1)+p(n.getDate())+'_'+p(n.getHours())+p(n.getMinutes())+p(n.getSeconds());
   const filename='子禾工作台_备份_'+ts+'.json';
-  const text=JSON.stringify(state,null,2);
+  const text=JSON.stringify(backupPayload(),null,2);
   // 先同步标记，避免重复触发与递归
   state.meta.lastBackup=d;
   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
@@ -9983,7 +9992,7 @@ function dailyBackupCheck(){
 function doImportFile(file){
   const fr=new FileReader();
   fr.onload=function(){
-    try{const d=JSON.parse(fr.result);state=normalize(d);saveData();refreshAll();toast('导入成功');}
+    try{const d=JSON.parse(fr.result);state=normalize(d);if(Array.isArray(d._haodazi)){try{localStorage.setItem('haodazi_tie_v1',JSON.stringify(d._haodazi));}catch(e){}}saveData();refreshAll();toast('导入成功'+(Array.isArray(d._haodazi)?'（含好搭子）':''));}
     catch(e){toast('导入失败：文件格式错误');}
   };
   fr.readAsText(file);
@@ -11713,35 +11722,31 @@ function habitDel(id){
   },'删除',true);
 }
 
-/* ===== 积分统计（v352 · 2026-10-25）：日常管理 TAB · 每周打卡下方独立卡片 =====
-   摘要数据与 points.html 共用 wbpts_* localStorage 键；点卡片进全屏 iframe 详情，返回落回 punch */
+/* ===== 积分统计（v353 · 2026-10-25 极简版）：日常管理 TAB · 每周打卡下方独立卡片 =====
+   与 points.html 共用 wbp2_accounts 键；每账号只记三样：名称 / 总积分(统计日期) / 最近到期积分(日期) */
 function wptsRead(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }
-function wptsTodayStr(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function wptsDaysLeft(iso){ if(!iso) return null; var t=new Date(wptsTodayStr()+'T00:00:00'); var e=new Date(String(iso).slice(0,10)+'T00:00:00'); return Math.round((e-t)/86400000); }
-function wptsSummary(){
-  var accs=wptsRead('wbpts_accounts',[]), bats=wptsRead('wbpts_batches',[]);
-  var avail=0,w7=0,waste=0,active=0;
-  (bats||[]).forEach(function(b){
-    if(!b||b.remain<=0) return;
-    var dl=wptsDaysLeft(b.expiresAt);
-    if(dl!==null&&dl<0){ waste+=b.remain; return; }
-    avail+=b.remain; active++;
-    if(dl!==null&&dl<=7) w7+=b.remain;
-  });
-  return { accounts:(accs||[]).length, avail:avail, w7:w7, waste:waste, active:active };
-}
+function wptsMd(iso){ return iso ? iso.slice(5) : ''; }
+function wptsDaysLeft(iso){ if(!iso) return null; var t=new Date(); var ts=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); var a=new Date(ts+'T00:00:00'); var b=new Date(String(iso).slice(0,10)+'T00:00:00'); return Math.round((b-a)/86400000); }
+function wptsFmt(n){ return Number(n||0).toLocaleString('zh-CN',{maximumFractionDigits:2}); }
 function wptsCardHtml(){
-  var s=wptsSummary();
-  var n=function(x){ return Number(x||0).toLocaleString('zh-CN'); };
+  var accs=wptsRead('wbp2_accounts',[]);
+  var rows=(accs||[]).slice().sort(function(a,b){ var da=a.nearDate||'9999-99-99', db=b.nearDate||'9999-99-99'; return da<db?-1:da>db?1:0; }).map(function(a){
+    var hasTotal=(a.total!==null&&a.total!==undefined&&a.total!=='');
+    var totalTxt=hasTotal ? wptsFmt(a.total)+'（'+wptsMd(a.totalDate)+' 统计）' : '待录入';
+    var dl=a.nearDate?wptsDaysLeft(a.nearDate):null;
+    var cls=(dl===null)?'':((dl<0||dl<=7)?' style="color:var(--red)"':(dl<=14)?' style="color:#b87a0a"':'');
+    var nearTxt=(a.nearAmt&&a.nearDate) ? wptsFmt(a.nearAmt)+'（'+wptsMd(a.nearDate)+' 到期）' : '—';
+    return '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:7px 2px;border-bottom:1px dashed var(--line)">'
+      +'<span style="font-weight:700;font-size:13.5px">'+esc(a.name)+'</span>'
+      +'<span style="font-size:12.5px;color:var(--muted);white-space:nowrap">总 '+totalTxt+'</span>'
+      +'<span style="font-size:12.5px;font-weight:700;white-space:nowrap"'+cls+'>'+nearTxt+'</span></div>';
+  }).join('');
+  var lastDate=''; (accs||[]).forEach(function(a){ if(a.totalDate&&a.totalDate>lastDate) lastDate=a.totalDate; });
   return '<div class="pu-glass" onclick="openPoints()" style="cursor:pointer">'
     +'<div class="pu-hd"><span class="pu-t"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>积分统计</span>'
-    +'<span class="sched-date">'+s.accounts+' 个账号 · '+s.active+' 个有效批次</span></div>'
-    +'<div class="stat-grid">'
-    +'<div class="stat"><div class="v">'+n(s.avail)+'</div><div class="k">可用积分</div></div>'
-    +'<div class="stat"><div class="v" style="color:var(--red)">'+n(s.w7)+'</div><div class="k">7 天内到期</div></div>'
-    +'<div class="stat"><div class="v">'+n(s.waste)+'</div><div class="k">过期浪费</div></div>'
-    +'</div>'
-    +'<div class="mn-mini-grid"><div class="cat-card" style="grid-column:1/-1"><span class="cat-emoji">📈</span><span class="cat-title">打开积分统计</span><span class="cat-count">多账号余额 · 到期管理 · 先到期优先消耗</span></div></div>'
+    +'<span class="sched-date">'+(accs||[]).length+' 个账号'+(lastDate?' · 更新至 '+wptsMd(lastDate):'')+'</span></div>'
+    +(rows || '<div class="hint">还没有账号数据，点开卡片录入</div>')
+    +'<div class="mn-mini-grid"><div class="cat-card" style="grid-column:1/-1"><span class="cat-emoji">📈</span><span class="cat-title">打开积分统计</span><span class="cat-count">总积分 · 最近到期 · 统计日期</span></div></div>'
     +'</div>';
 }
 /* v352 修复：积分视图改为 body 级独立遮罩，不再塞进 #view——
@@ -16699,6 +16704,15 @@ function renderBlogHaodazi(){
     '<div class="read-backwrap" style="margin:6px 0 8px"><button class="read-back" data-action="blog-back">← 返回 博客精选</button></div>'+
     '<div class="blog-iframe-wrap"><iframe src="haodazi.html" title="好搭子" loading="lazy"></iframe></div>';
 }
+function renderSkin(){
+  const html=
+    '<div style="padding:4px 2px 10px">'+
+      '<h2 style="margin:6px 0 4px;font-size:19px;color:#4a3a7a">🧪 护肤科学</h2>'+
+      '<p style="margin:0 0 12px;font-size:13.5px;line-height:1.6;color:#6b6286;background:#F0EBFB;border:1px solid #d7cfed;border-radius:12px;padding:10px 12px">这里后期会像「芳疗精油」一样，建成独立的护肤科学体系（成分机理 · 方案库 · 知识网络）。目前先接入 <b>肌语·皮肤私人医生</b>，帮你每天记录与养护肌肤。</p>'+
+      '<div class="blog-iframe-wrap"><iframe src="qiyu.html" title="肌语·皮肤私人医生" loading="lazy"></iframe></div>'+
+    '</div>';
+  document.getElementById('view').innerHTML=html;
+}
 
 /* ===== 博客精选内嵌：万物大转盘（v347 多转盘 + 模板库） ===== */
 var BW_STORE='sg_blog_wheel_v2', BW_STORE_OLD='sg_blog_wheel_v1';
@@ -17252,7 +17266,7 @@ function morningSectionHtml(){
 }
 /* 更多功能上拉面板：手机底栏只放 5 项，其余收进这里 */
 function openMoreSheet(){
-  const items=[['speak','💬','表达训练'],['diet','💚','健康养生'],['aroma','🌿','芳疗精油'],['ai','🤖','AI指令'],['mine','⚙️','我的设置']];
+  const items=[['speak','💬','表达训练'],['diet','💚','健康养生'],['aroma','🌿','芳疗精油'],['skin','🧪','护肤科学'],['ai','🤖','AI指令'],['mine','⚙️','我的设置']];
   let h='<div class="more-sheet"><div class="more-sheet-hd">更多功能</div><div class="more-grid">';
   items.forEach(function(it){h+='<button class="more-item" data-action="more-go" data-tab="'+it[0]+'"><span class="more-emo">'+it[1]+'</span><span class="more-lbl">'+it[2]+'</span></button>';});
   h+='</div><button class="more-close" data-action="more-close">取消</button></div>';
@@ -18076,7 +18090,7 @@ document.addEventListener('input',function(e){
   booting=false;
 })();
 
-var MINE='v352-20261025';
+var MINE='v353-20261025';
 /* 注册 Service Worker（v147→v262 强化）：清掉历史缓存 + 主动检查更新 + 网络优先拿最新页，根治"改了看不到" */
 function forceUpdate(){
   var done=function(){
@@ -18094,7 +18108,7 @@ function forceUpdate(){
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=352',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
+    navigator.serviceWorker.register('sw.js?v=353',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
     if(navigator.serviceWorker.getRegistration){ navigator.serviceWorker.getRegistration().then(function(reg){ if(reg){ reg.update().catch(function(){}); } }); }
     if(syncAutoOn()){ syncAutoReconcile().catch(function(){}); syncStartPolling(); }
   // 版本自愈：线上 build 与本地 MINE 不一致时，强制注销旧 SW 并拉最新页，根除缓存死锁导致的"改了看不到"
