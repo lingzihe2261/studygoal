@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#7659cc">
+<title>好搭子 · 人际关系保温系统</title>
+<style>
+:root{--purple:#7659cc;--ink:#26215c;--ink2:#5b517a;--ink3:#9a92c0;--line:#e6e0f5;--bg:#f6f3fb;}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;}
+.app{max-width:560px;margin:0 auto;padding:0 16px calc(40px + env(safe-area-inset-bottom));min-height:100vh;}
+.hd{background:linear-gradient(135deg,#F1EBFC,#E4DBF9);padding:22px 18px 18px;border-radius:0 0 22px 22px;margin:0 -16px 16px;}
+.hd h1{margin:0;font-size:21px;font-weight:800;color:var(--ink);}
+.hd .dt{font-size:12.5px;color:var(--ink2);margin-top:5px;}
+.hd .lead{font-size:13.5px;color:var(--ink2);margin-top:9px;line-height:1.6;}
+.hint{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--ink2);margin-bottom:14px;}
+.hint b{color:var(--purple);}
+.stats{display:flex;gap:8px;margin-bottom:14px;}
+.stats .box{flex:1 1 0;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center;}
+.stats .box .n{font-size:19px;font-weight:800;color:var(--purple);}
+.stats .box .l{font-size:11px;color:var(--ink3);margin-top:2px;}
+.stats .box.warn .n{color:#e2622f;}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;margin-bottom:2px;-webkit-overflow-scrolling:touch;}
+.filters .fc{flex:0 0 auto;border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:18px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;}
+.filters .fc.on{background:var(--purple);color:#fff;border-color:var(--purple);}
+.summary{background:linear-gradient(135deg,#fff,#faf6ff);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px;}
+.summary h2{margin:0 0 10px;font-size:14px;color:var(--ink);display:flex;align-items:center;gap:7px;}
+.summary .warm{display:flex;flex-wrap:wrap;gap:8px;}
+.summary .chip{background:#fff;border:1px solid #f0c9bd;color:#c2542f;border-radius:20px;padding:6px 12px;font-size:12.5px;font-weight:600;}
+.summary .chip.empty{border-style:dashed;border-color:var(--line);color:var(--ink3);font-weight:400;}
+.list{display:flex;flex-direction:column;gap:11px;}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;}
+.card.cool{border-color:#f0c9bd;}
+.card .top{display:flex;align-items:flex-start;gap:10px;}
+.card .nm{flex:1 1 auto;min-width:0;}
+.card .name{font-size:17px;font-weight:800;color:var(--ink);}
+.card .tag{display:inline-block;margin-top:3px;font-size:11.5px;color:var(--ink2);background:#f3effb;border-radius:8px;padding:2px 8px;}
+.card .stars{font-size:15px;color:#f2c14e;letter-spacing:1px;margin-top:5px;}
+.card .stars .off{color:#e0d9f2;}
+.card .ops{display:flex;gap:6px;flex:0 0 auto;}
+.card .op{border:none;background:#f7f4fc;color:#8a7fc0;width:30px;height:30px;border-radius:9px;font-size:15px;cursor:pointer;}
+.card .del{border:none;background:#f7f4fc;color:#b3a9d6;width:30px;height:30px;border-radius:9px;font-size:16px;cursor:pointer;}
+.temp{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.bar{flex:1 1 auto;height:9px;border-radius:6px;background:#eee7fb;overflow:hidden;}
+.bar i{display:block;height:100%;border-radius:6px;}
+.tval{flex:0 0 auto;font-size:13px;font-weight:700;min-width:62px;text-align:right;}
+.tval small{font-weight:400;color:var(--ink3);font-size:11px;}
+.meta{display:flex;justify-content:space-between;align-items:center;margin-top:11px;font-size:12.5px;color:var(--ink2);}
+.meta .cool-txt{color:#c2542f;font-weight:600;}
+.touch{flex:0 0 auto;border:1px solid var(--purple);background:#f6f3fb;color:var(--purple);border-radius:20px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer;}
+.empty{text-align:center;padding:40px 16px;color:var(--ink3);}
+.empty .big{font-size:46px;}
+.empty p{font-size:14px;margin:12px 0 18px;}
+.btn{display:inline-block;border:none;border-radius:13px;padding:13px 18px;font-size:15px;font-weight:700;cursor:pointer;min-height:48px;}
+.btn.p{background:var(--purple);color:#fff;box-shadow:0 4px 12px rgba(118,89,204,.3);}
+.btn.ghost{background:#fff;color:var(--purple);border:1px solid var(--purple);}
+.btn.ghost.s{background:transparent;color:var(--ink3);border-color:var(--line);}
+.actions{display:flex;gap:10px;margin-top:18px;justify-content:center;}
+.fab{position:fixed;right:18px;bottom:calc(22px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;border:none;background:var(--purple);color:#fff;font-size:30px;box-shadow:0 6px 18px rgba(118,89,204,.4);cursor:pointer;z-index:120;}
+.mask{position:fixed;inset:0;background:rgba(38,33,92,.42);z-index:200;display:none;}
+.mask.on{display:block;}
+.modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,92vw);background:#fff;border-radius:20px;padding:20px;z-index:210;display:none;}
+.modal.on{display:block;}
+.modal h3{margin:0 0 16px;font-size:17px;}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:13px;color:var(--ink2);margin-bottom:6px;font-weight:600;}
+.fld input[type=text]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit;}
+.fld input:focus{outline:none;border-color:var(--purple);}
+.fld select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;font-size:16px;font-family:inherit;background:#fff;}
+.starpick{display:flex;gap:6px;}
+.starpick span{font-size:30px;color:#e0d9f2;cursor:pointer;line-height:1;}
+.starpick span.on{color:#f2c14e;}
+.mfoot{display:flex;gap:10px;margin-top:8px;}
+.mfoot .btn{flex:1 1 0;}
+.toast{position:fixed;left:50%;bottom:calc(80px + env(safe-area-inset-bottom));transform:translateX(-50%);background:rgba(38,33,92,.92);color:#fff;padding:11px 18px;border-radius:22px;font-size:13.5px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:300;}
+.toast.show{opacity:1;}
+.algo{font-size:11.5px;color:var(--ink3);margin-top:10px;text-align:center;line-height:1.5;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hd">
+    <h1>好搭子 · 人际关系保温系统</h1>
+    <div class="dt" id="dt"></div>
+    <div class="lead">把常联系的几个人放进来，剩下的交给我盯着。</div>
+  </div>
+  <div id="view"></div>
+</div>
+<button class="fab" data-action="tie-add">＋</button>
+<div class="mask" id="mask"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+var TIE_KEY='haodazi_tie_v1';
+var TIE_TAGS=['家人','朋友','同事','客户','同学','其他'];
+var tieList=[];
+var TIE_FILTER='全部';
+var editId=null;
+var toastTimer=null;
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show');},1700);}
+function fmt(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 '+['周日','周一','周二','周三','周四','周五','周六'][d.getDay()];}
+function todayStr(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysSince(iso){if(!iso)return 9999;var a=new Date(iso+'T00:00:00');var b=new Date();b.setHours(0,0,0,0);return Math.max(0,Math.round((b-a)/86400000));}
+function uid(){return 't'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);}
+function loadTie(){try{var s=localStorage.getItem(TIE_KEY);if(s){var o=JSON.parse(s);if(Array.isArray(o))tieList=o;}}catch(e){}}
+function saveTie(){try{localStorage.setItem(TIE_KEY,JSON.stringify(tieList));}catch(e){}}
+function seedTie(){
+  tieList=[
+    {id:uid(),name:'隔壁王姐',tag:'朋友',star:4,last:shiftday(-3)},
+    {id:uid(),name:'大学室友阿成',tag:'同学',star:3,last:shiftday(-18)},
+    {id:uid(),name:'合作方老陈',tag:'客户',star:5,last:shiftday(-1)}
+  ];
+  saveTie();
+}
+function shiftday(n){var d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// ⚠️ 温度算法为我自创设计（原站算法看不到）：星级×18 − 久未联系天数×衰减系数(星级越低掉得越快)，<45℃ 偏凉
+function tieTemp(p){
+  var base=p.star*18;
+  var days=p.last?daysSince(p.last):0;
+  var decay=days*Math.max(1,6-p.star);
+  var t=base-decay; if(t<0)t=0; if(t>100)t=100;
+  return Math.round(t);
+}
+function isCool(p){return tieTemp(p)<45;}
+function tempColor(t){if(t>=60)return '#4cb8a6';if(t>=45)return '#f2c14e';return '#e2622f';}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function render(){
+  var dt=document.getElementById('dt'); if(dt)dt.textContent=fmt(new Date());
+  var v=document.getElementById('view');
+  if(!tieList.length){
+    v.innerHTML='<div class="empty"><div class="big">🫧</div><p>先从一个人开始<br>录入姓名、选个标签、定个星级。<br>之后每一天，我替你盯着谁在变凉。</p>'+
+      '<div class="actions"><button class="btn p" data-action="tie-add">添加第一位搭子</button>'+
+      '<button class="btn ghost s" data-action="tie-seed">看看示例数据</button></div></div>';
+    return;
+  }
+  // 统计
+  var avg=Math.round(tieList.reduce(function(s,p){return s+tieTemp(p);},0)/tieList.length);
+  var coolN=tieList.filter(isCool).length;
+  var stats='<div class="stats"><div class="box"><div class="n">'+tieList.length+'</div><div class="l">位搭子</div></div>'+
+    '<div class="box"><div class="n">'+avg+'℃</div><div class="l">平均温度</div></div>'+
+    '<div class="box warn"><div class="n">'+coolN+'</div><div class="l">位偏凉</div></div></div>';
+  // 筛选 chips
+  var ftags=['全部'].concat(TIE_TAGS.filter(function(t){return tieList.some(function(p){return p.tag===t;});}));
+  var filt='<div class="filters">'+ftags.map(function(t){return '<span class="fc'+(t===TIE_FILTER?' on':'')+'" data-action="tie-filter" data-tag="'+esc(t)+'">'+esc(t)+'</span>';}).join('')+'</div>';
+  // 当前展示列表
+  var disp=tieList.filter(function(p){return TIE_FILTER==='全部'||p.tag===TIE_FILTER;}).slice().sort(function(a,b){return tieTemp(a)-tieTemp(b);});
+  var cool=disp.filter(isCool).sort(function(a,b){return tieTemp(a)-tieTemp(b);});
+  var sm='<div class="summary"><h2>🔥 今日该暖一下</h2><div class="warm">';
+  if(cool.length)sm+=cool.slice(0,4).map(function(p){return '<span class="chip">'+esc(p.name)+' · '+tieTemp(p)+'℃ · '+daysSince(p.last)+'天没联系</span>';}).join('');
+  else sm+='<span class="chip empty">都还好，关系都不凉 ✓</span>';
+  sm+='</div></div>';
+  var rows='<div class="list">';
+  if(!disp.length){
+    rows+='<div class="empty"><div class="big">🔍</div><p>这个标签下还没有搭子</p></div>';
+  } else {
+    disp.forEach(function(p){
+      var t=tieTemp(p), cool=isCool(p), days=daysSince(p.last);
+      var st='';for(var i=1;i<=5;i++)st+='<span class="'+(i<=p.star?'':'off')+'">'+(i<=p.star?'★':'☆')+'</span>';
+      var metaTxt = p.last ? (days===0?'今天联系过':days+'天没联系') : '还没联系过';
+      rows+='<div class="card'+(cool?' cool':'')+'">'+
+        '<div class="top"><div class="nm"><div class="name">'+esc(p.name)+'</div><span class="tag">'+esc(p.tag)+'</span>'+
+        '<div class="stars">'+st+'</div></div>'+
+        '<div class="ops"><button class="op" data-action="tie-edit" data-id="'+p.id+'" title="编辑">✎</button>'+
+        '<button class="del" data-action="tie-del" data-id="'+p.id+'" title="删除">×</button></div></div>'+
+        '<div class="temp"><div class="bar"><i style="width:'+t+'%;background:'+tempColor(t)+'"></i></div>'+
+        '<div class="tval">'+t+'℃ <small>'+(cool?'偏凉':'正常')+'</small></div></div>'+
+        '<div class="meta">'+
+          '<span class="'+(cool?'cool-txt':'')+'">'+metaTxt+'</span>'+
+          '<button class="touch" data-action="tie-touch" data-id="'+p.id+'">✓ 今天联系了</button>'+
+        '</div></div>';
+    });
+  }
+  rows+='</div>';
+  v.innerHTML=stats+filt+sm+rows;
+}
+
+function openAdd(eid){
+  editId=eid||null;
+  var p=null;
+  if(editId){p=tieList.find(function(x){return x.id===editId;});}
+  var name=p?p.name:'';
+  var tag=p?p.tag:'朋友';
+  var star=p?p.star:3;
+  document.getElementById('modal').innerHTML=
+    '<h3>'+(editId?'编辑搭子':'添加搭子')+'</h3>'+
+    '<div class="fld"><label>姓名</label><input type="text" id="f-name" placeholder="例如：隔壁王姐" maxlength="20" value="'+esc(name)+'"></div>'+
+    '<div class="fld"><label>标签</label><select id="f-tag">'+TIE_TAGS.map(function(t){return '<option'+(t===tag?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
+    '<div class="fld"><label>关系星级</label><div class="starpick" id="f-star">'+
+      '<span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div></div>'+
+    '<div class="mfoot"><button class="btn ghost s" data-action="tie-cancel">取消</button><button class="btn p" data-action="tie-save">'+(editId?'保存修改':'保存')+'</button></div>'+
+    '<div class="algo">温度＝星级×18 − 久未联系天数×衰减系数（星级越低掉得越快），低于 45℃ 视为偏凉。</div>';
+  var sp=document.getElementById('f-star');
+  function paint(){[].forEach.call(sp.children,function(s){s.className=(+s.getAttribute('data-v'))<=star?'on':'';});}
+  paint();
+  [].forEach.call(sp.children,function(s){s.onclick=function(){star=+s.getAttribute('data-v');paint();};});
+  var ni=document.getElementById('f-name'); if(ni)ni.focus();
+  openModal();
+}
+function saveAdd(){
+  var nm=(document.getElementById('f-name').value||'').trim();
+  if(!nm){toast('先填个名字吧');return;}
+  var tag=document.getElementById('f-tag').value;
+  if(editId){
+    var p=tieList.find(function(x){return x.id===editId;});
+    if(p){
+      var ons=document.querySelectorAll('#f-star span.on');
+      var st=0;[].forEach.call(ons,function(s){st=Math.max(st,+s.getAttribute('data-v'));});
+      p.name=nm;p.tag=tag;p.star=st;
+    }
+    saveTie();closeModal();render();toast('已更新 '+nm);
+  } else {
+    tieList.push({id:uid(),name:nm,tag:tag,star:3,last:null});
+    saveTie();closeModal();render();toast('已添加 '+nm);
+  }
+}
+function openModal(){document.getElementById('mask').classList.add('on');document.getElementById('modal').classList.add('on');}
+function closeModal(){document.getElementById('mask').classList.remove('on');document.getElementById('modal').classList.remove('on');}
+function touch(id){var p=tieList.find(function(x){return x.id===id;});if(!p)return;p.last=todayStr();saveTie();render();toast('记下了，已回暖 ✓');}
+function del(id){var p=tieList.find(function(x){return x.id===id;});if(!p)return;var i=tieList.indexOf(p);tieList.splice(i,1);saveTie();render();toast('已删除');}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-action]');if(!b)return;
+  var a=b.getAttribute('data-action'),id=b.getAttribute('data-id'),tag=b.getAttribute('data-tag');
+  if(a==='tie-add')openAdd();
+  else if(a==='tie-seed'){seedTie();render();toast('已载入示例数据');}
+  else if(a==='tie-cancel'||a==='tie-close')closeModal();
+  else if(a==='tie-save')saveAdd();
+  else if(a==='tie-edit')openAdd(id);
+  else if(a==='tie-touch')touch(id);
+  else if(a==='tie-del')del(id);
+  else if(a==='tie-filter'){TIE_FILTER=tag;render();}
+});
+document.getElementById('mask').addEventListener('click',function(e){if(e.target.id==='mask')closeModal();});
+
+loadTie();render();
+</script>
+</body>
+</html>
