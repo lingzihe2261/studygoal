@@ -1672,6 +1672,9 @@ body{background:#FFFFFF!important}
 .bw-tipx2{font-size:12px;color:#9a92c0;margin:16px 2px 0;line-height:1.6;}
 @media(max-width:360px){.bw-tpls{grid-template-columns:1fr;}.bw-themes{grid-template-columns:1fr;}}
 @media(max-width:480px){.bw-area,.bw-spin{max-width:300px;}}
+/* 好搭子 iframe 内嵌 */
+.blog-iframe-wrap{position:relative;width:100%;height:calc(100vh - 132px);background:#f6f3fb;border-radius:16px;overflow:hidden;margin-top:2px;}
+.blog-iframe-wrap iframe{width:100%;height:100%;border:none;display:block;}
 </style>
 </head>
 <body>
@@ -9202,7 +9205,7 @@ function ztAdvSave(){
 }
 function renderMine(){
   let html='';
-  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v351</div></div>';
+  html+='<div class="pu-hero"><div class="pu-slogan">数据备份 · 迁移与设置</div><h2>子禾工作台</h2><div class="pu-dt">'+fmt(T)+' · 版本 v352</div></div>';
   html+='<div class="mine-card"><h3>数据备份</h3><p>所有数据存在本机浏览器，导出 JSON 可随身保存或换设备恢复。</p>'+
     '<div class="mine-row"><button class="btn-primary" data-action="export" style="box-shadow:none">导出 JSON 备份</button>'+
     '<button class="btn-ghost" data-action="import">导入并覆盖</button></div></div>';
@@ -11710,7 +11713,7 @@ function habitDel(id){
   },'删除',true);
 }
 
-/* ===== 积分统计（v351 · 2026-10-25）：日常管理 TAB · 每周打卡下方独立卡片 =====
+/* ===== 积分统计（v352 · 2026-10-25）：日常管理 TAB · 每周打卡下方独立卡片 =====
    摘要数据与 points.html 共用 wbpts_* localStorage 键；点卡片进全屏 iframe 详情，返回落回 punch */
 function wptsRead(k,d){ try{ var v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }
 function wptsTodayStr(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -11741,19 +11744,28 @@ function wptsCardHtml(){
     +'<div class="mn-mini-grid"><div class="cat-card" style="grid-column:1/-1"><span class="cat-emoji">📈</span><span class="cat-title">打开积分统计</span><span class="cat-count">多账号余额 · 到期管理 · 先到期优先消耗</span></div></div>'
     +'</div>';
 }
+/* v352 修复：积分视图改为 body 级独立遮罩，不再塞进 #view——
+   否则自动同步轮询（15s）拉到云端数据时的 refreshAll() 会重建 #view，把 iframe 连锅端掉，
+   表现为「积分统计自动退出」。遮罩挂 body 下，任何 refreshAll 都碰不到它。 */
+var wptsOverlay=null;
 function openPoints(){
-  var v=document.getElementById('view');
+  var old=document.getElementById('wptsWrap'); if(old)old.remove();
   var nv=document.getElementById('nav');
   if(nv)nv.style.display='none';
   document.body.classList.add('mh-detail');
-  v.innerHTML='<div id="wptsWrap" style="position:fixed;inset:0;display:flex;flex-direction:column;background:#fff;z-index:70">'
-    +'<div style="padding:10px 12px;border-bottom:1px solid #e6def5;flex:0 0 auto">'
+  var wrap=document.createElement('div');
+  wrap.id='wptsWrap';
+  wrap.style.cssText='position:fixed;inset:0;display:flex;flex-direction:column;background:#fff;z-index:200';
+  wrap.innerHTML='<div style="padding:10px 12px;border-bottom:1px solid #e6def5;flex:0 0 auto">'
     +'<button onclick="closePoints()" style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid #d5cee8;border-radius:12px;color:#4d368e;font-size:14px;font-weight:600;padding:9px 14px;cursor:pointer;font-family:inherit">← 返回 日常管理</button>'
     +'</div>'
-    +'<iframe src="points.html" style="flex:1 1 auto;width:100%;border:0;min-height:0"></iframe>'
-    +'</div>';
+    +'<iframe src="points.html" style="flex:1 1 auto;width:100%;border:0;min-height:0"></iframe>';
+  document.body.appendChild(wrap);
+  wptsOverlay=wrap;
 }
 function closePoints(){
+  var w=document.getElementById('wptsWrap'); if(w)w.remove();
+  wptsOverlay=null;
   var nv=document.getElementById('nav');
   if(nv)nv.style.display='';
   document.body.classList.remove('mh-detail');
@@ -16642,6 +16654,7 @@ function renderBlog(){
   if(blogJump==='wheel'){ renderBlogWheel(); return; }
   if(blogJump==='wheelMgr'){ renderBlogWheelMgr(); return; }
   if(blogJump==='wheelTheme'){ renderBlogWheelTheme(); return; }
+  if(blogJump==='haodazi'){ renderBlogHaodazi(); return; }
   let html='';
   html+='<div class="blog-list">';
   html+='<div class="blog-card blog-card-wheel" data-action="blog-wheel">'+
@@ -16649,7 +16662,13 @@ function renderBlog(){
     '<div class="blog-hd"><span class="blog-title">万物大转盘</span><span class="blog-tag">小工具</span></div></div>'+
     '<p class="blog-desc">纠结吃什么 / 做什么，转一下让运气决定</p>'+
     '<p class="blog-tip">💡 权重随机 · 空格也能转</p>'+
-    '<div class="blog-actions"><span class="blog-btn">打开转盘 ↗</span></div></div>';
+    '<div class="blog-actions"><span class="blog-btn">打开转盘 ↗</span></div></div>'+
+  '<div class="blog-card blog-card-wheel" data-action="blog-haodazi">'+
+    '<div class="blog-top"><div class="blog-emoji">🫶</div>'+
+    '<div class="blog-hd"><span class="blog-title">好搭子 · 人际关系保温</span><span class="blog-tag">小工具</span></div></div>'+
+    '<p class="blog-desc">录入常联系人，系统替你盯着谁的关系在变凉</p>'+
+    '<p class="blog-tip">💡 温度算法 · 偏凉自动提醒</p>'+
+    '<div class="blog-actions"><span class="blog-btn">打开好搭子 ↗</span></div></div>';
   BLOG_LINKS.forEach(function(b,i){
     let acts='';
     if(b.urls&&b.urls.length){
@@ -16674,6 +16693,11 @@ function renderBlog(){
   });
   html+='</div>';
   document.getElementById('view').innerHTML=html;
+}
+function renderBlogHaodazi(){
+  document.getElementById('view').innerHTML=
+    '<div class="read-backwrap" style="margin:6px 0 8px"><button class="read-back" data-action="blog-back">← 返回 博客精选</button></div>'+
+    '<div class="blog-iframe-wrap"><iframe src="haodazi.html" title="好搭子" loading="lazy"></iframe></div>';
 }
 
 /* ===== 博客精选内嵌：万物大转盘（v347 多转盘 + 模板库） ===== */
@@ -17869,6 +17893,7 @@ document.addEventListener('click',function(e){
   else if(a==='fruit-edit-save'){fruitEditSave();}
   else if(a==='fruit-copy'){fruitCopy(parseInt(btn.getAttribute('data-fi'),10));}
   else if(a==='blog-wheel'){blogJump='wheel';refreshAll();}
+  else if(a==='blog-haodazi'){blogJump='haodazi';refreshAll();}
   else if(a==='blog-back'){blogJump=null;refreshAll();}
   else if(a==='bw-mgr'){blogJump='wheelMgr';loadBW();refreshAll();}
   else if(a==='bw-mgr-back'){blogJump='wheel';loadBW();refreshAll();}
@@ -18051,7 +18076,7 @@ document.addEventListener('input',function(e){
   booting=false;
 })();
 
-var MINE='v351-20261025';
+var MINE='v352-20261025';
 /* 注册 Service Worker（v147→v262 强化）：清掉历史缓存 + 主动检查更新 + 网络优先拿最新页，根治"改了看不到" */
 function forceUpdate(){
   var done=function(){
@@ -18069,7 +18094,7 @@ function forceUpdate(){
 }
 if('serviceWorker' in navigator){
   window.addEventListener('load',function(){
-    navigator.serviceWorker.register('sw.js?v=351',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
+    navigator.serviceWorker.register('sw.js?v=352',{updateViaCache:'none'}).catch(function(e){console.warn('SW register failed',e);});
     if(navigator.serviceWorker.getRegistration){ navigator.serviceWorker.getRegistration().then(function(reg){ if(reg){ reg.update().catch(function(){}); } }); }
     if(syncAutoOn()){ syncAutoReconcile().catch(function(){}); syncStartPolling(); }
   // 版本自愈：线上 build 与本地 MINE 不一致时，强制注销旧 SW 并拉最新页，根除缓存死锁导致的"改了看不到"
